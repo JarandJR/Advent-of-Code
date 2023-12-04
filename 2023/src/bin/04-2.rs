@@ -1,58 +1,12 @@
-use aoc2023::read_file_string;
-
+use aoc2023::{read_file_string, Parse, get_first_number, get_data_list};
 
 fn main() {
     println!("Result {}", solve(read_file_string("inputs/04.txt").unwrap()));
 }
 
 fn solve(data: String) -> i32 {
-    let cards = data.lines().into_iter()
-    .map(|l| parse(&l))
-    .collect::<Vec<Card>>();
+    let cards = get_data_list(data);
     copies_of_cards(cards)
-}
-
-fn parse(line: &str) -> Card {
-    let line = line.replace("Card", "").trim().to_string();
-    let id = get_id(&line);
-    let line = line[3..].trim().to_string();
-    let data = line.split("|").into_iter();
-    let winnings = data.clone().into_iter().nth(0).unwrap().trim();
-    let numbers = data.into_iter().nth(1).unwrap().trim();
-    let winnings = winnings.replace(":", "").trim().to_string();
-
-    let mut winning = Vec::new();
-    for w in winnings.split(" ").filter(|c| !c.is_empty()).into_iter() {
-        winning.push(w.parse().unwrap())
-    }
-    let mut nums = Vec::new();
-    for n in numbers.split(" ").filter(|c| !c.is_empty()).into_iter() {
-        nums.push(n.parse().unwrap());
-    }
-    let wins = get_wins(winning, nums);
-    Card { id, wins }
-}
-
-fn get_id(l: &str) -> i32 {
-    let mut res = String::new();
-    for c in l.chars().into_iter() {
-        if c.is_numeric() {
-            res.push(c);
-        } else if c == ':' {
-            break;
-        }
-    }
-    res.parse().unwrap()
-}
-
-fn get_wins(winning: Vec<i32>, nums: Vec<i32>) -> i32 {
-    let mut matches = 0;
-    for n in nums {
-        if winning.contains(&n) {
-            matches += 1;
-        }
-    }
-    matches
 }
 
 fn copies_of_cards(cards: Vec<Card>) -> i32 {
@@ -77,8 +31,41 @@ struct Card {
     wins: i32,
 }
 
+impl Parse for Card {
+    fn parse(line: &str) -> Self {
+        let line = line.replace("Card", "").trim().to_string();
+        let id = get_first_number(&line);
+        let line = line[3..].trim().to_string();
+        let data = line.split("|").into_iter();
+        let winnings = data.clone().into_iter().nth(0).unwrap().trim();
+        let numbers = data.into_iter().nth(1).unwrap().trim();
+        let winnings = winnings.replace(":", "").trim().to_string();
+    
+        let mut winning = Vec::new();
+        for w in winnings.split(" ").filter(|c| !c.is_empty()).into_iter() {
+            winning.push(w.parse().unwrap())
+        }
+        let mut nums = Vec::new();
+        for n in numbers.split(" ").filter(|c| !c.is_empty()).into_iter() {
+            nums.push(n.parse().unwrap());
+        }
+        let wins = get_wins(winning, nums);
+        Self { id, wins }
+    }
+}
+
+fn get_wins(winning: Vec<i32>, nums: Vec<i32>) -> i32 {
+    let mut matches = 0;
+    for n in nums {
+        if winning.contains(&n) {
+            matches += 1;
+        }
+    }
+    matches
+}
+
 #[test]
-fn test_01_2() {
+fn test_04_2() {
     let input = String::from("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
 Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1

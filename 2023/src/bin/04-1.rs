@@ -1,5 +1,4 @@
-use aoc2023::read_file_string;
-
+use aoc2023::{read_file_string, parse_line, Parse};
 
 fn main() {
     println!("Result {}", solve(read_file_string("inputs/04.txt").unwrap()));
@@ -7,27 +6,9 @@ fn main() {
 
 fn solve(data: String) -> i32 {
     data.lines().into_iter()
-    .map(|l| parse(&l))
+    .map(|l| parse_line(&l))
     .map(|c| points(c))
     .fold(0, |a, b| a + b)
-}
-
-fn parse(line: &str) -> Card {
-    let line = line[9..].trim().to_string();
-    let data = line.split("|").into_iter();
-    let winnings = data.clone().into_iter().nth(0).unwrap().trim();
-    let numbers = data.into_iter().nth(1).unwrap().trim();
-    
-    let mut winning = Vec::new();
-    for w in winnings.split(" ").filter(|c| !c.is_empty()).into_iter() {
-        winning.push(w.parse().unwrap())
-    }
-    let mut nums = Vec::new();
-    for n in numbers.split(" ").filter(|c| !c.is_empty()).into_iter() {
-        nums.push(n.parse().unwrap());
-    }
-
-    Card { winning, nums }
 }
 
 fn points(card: Card) -> i32 {
@@ -48,8 +29,28 @@ struct Card {
     nums: Vec<i32>,
 }
 
+impl Parse for Card {
+    fn parse(line: &str) -> Self {
+        let line = line[9..].trim().to_string();
+        let data = line.split("|").into_iter();
+        let winnings = data.clone().into_iter().nth(0).unwrap().trim();
+        let numbers = data.into_iter().nth(1).unwrap().trim();
+        
+        let mut winning = Vec::new();
+        for w in winnings.split(" ").filter(|c| !c.is_empty()).into_iter() {
+            winning.push(w.parse().unwrap())
+        }
+        let mut nums = Vec::new();
+        for n in numbers.split(" ").filter(|c| !c.is_empty()).into_iter() {
+            nums.push(n.parse().unwrap());
+        }
+    
+        Self { winning, nums }
+    }
+}
+
 #[test]
-fn test_01_2() {
+fn test_04_1() {
     let input = String::from("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
 Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
