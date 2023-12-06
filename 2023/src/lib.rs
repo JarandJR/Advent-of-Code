@@ -19,12 +19,39 @@ pub fn get_data_list<T: Parse>(data: String) -> Vec<T> {
 
 pub fn get_first_number(l: &str) -> i32 {
     let mut res = String::new();
-    for c in l.chars().into_iter() {
+    let mut it = l.chars().into_iter();
+    while let Some(c) = it.next() {
         if c.is_numeric() {
-            res.push(c);
-        } else if c == ':' {
+            let mut c = c;
+            loop {
+                if !c.is_numeric() {
+                    break;
+                }
+                res.push(c);
+                c = it.next().unwrap();
+            }
             break;
         }
     }
     res.parse().unwrap()
+}
+
+pub fn get_numbers_on_line(l: &str) -> Vec<i64> {
+    let mut res = Vec::new();
+    let mut it = l.chars().into_iter();
+    while let Some(c) = it.next() {
+        if c.is_numeric() {
+            let mut c = Some(c);
+            let mut num = String::new();
+            loop {
+                if c.is_none() || !c.unwrap().is_numeric(){
+                    break;
+                }
+                num.push(c.unwrap());
+                c = it.next();
+            }
+            res.push(num.parse().unwrap());
+        }
+    }
+    res
 }
