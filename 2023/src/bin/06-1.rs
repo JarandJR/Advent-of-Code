@@ -4,12 +4,12 @@ fn main() {
     println!("Result {}", solve(read_file_string("inputs/06.txt").unwrap()));
 }
 
-fn solve(data: String) -> i64 {
+fn solve(data: String) -> i32 {
     let games: Vec<Game> = parse(&data);
     get_multiply_of_wins(&games)
 }
 
-fn get_multiply_of_wins(games: &Vec<Game>) -> i64 {
+fn get_multiply_of_wins(games: &Vec<Game>) -> i32 {
     let mut sum = 0;
     for g in games {
         let mut wins = 0;
@@ -30,8 +30,8 @@ fn get_multiply_of_wins(games: &Vec<Game>) -> i64 {
 
 #[derive(Debug, Clone)]
 struct Game {
-    time: i64,
-    record: i64,
+    time: i32,
+    record: i32,
 }
 
 fn parse(data: &str) -> Vec<Game> {

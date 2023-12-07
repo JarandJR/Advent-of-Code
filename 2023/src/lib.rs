@@ -36,7 +36,11 @@ pub fn get_first_number(l: &str) -> i32 {
     res.parse().unwrap()
 }
 
-pub fn get_numbers_on_line(l: &str) -> Vec<i64> {
+pub fn get_numbers_on_line<T>(l: &str) -> Vec<T> 
+    where
+    T: std::str::FromStr,
+    <T as std::str::FromStr>::Err: std::fmt::Debug,
+    {
     let mut res = Vec::new();
     let mut it = l.chars().into_iter();
     while let Some(c) = it.next() {
