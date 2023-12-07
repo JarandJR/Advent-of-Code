@@ -1,4 +1,4 @@
-use aoc2023::{read_file_string, Parse, get_first_number, get_data_list};
+use aoc2023::{read_file_string, Parse, get_first_number_on_line, get_data_list};
 
 fn main() {
     println!("Result {}", solve(read_file_string("inputs/04.txt").unwrap()));
@@ -34,7 +34,7 @@ struct Card {
 impl Parse for Card {
     fn parse(line: &str) -> Self {
         let line = line.replace("Card", "").trim().to_string();
-        let id = get_first_number(&line);
+        let id = get_first_number_on_line(&line);
         let line = line[3..].trim().to_string();
         let data = line.split("|").into_iter();
         let winnings = data.clone().into_iter().nth(0).unwrap().trim();
