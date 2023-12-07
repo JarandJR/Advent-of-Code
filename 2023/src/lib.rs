@@ -17,7 +17,7 @@ pub fn get_data_list<T: Parse>(data: String) -> Vec<T> {
     .collect()
 }
 
-pub fn get_first_number(l: &str) -> i32 {
+pub fn get_first_number_on_line(l: &str) -> i32 {
     let mut res = String::new();
     let mut it = l.chars().into_iter();
     while let Some(c) = it.next() {

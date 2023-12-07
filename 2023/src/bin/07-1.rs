@@ -1,13 +1,11 @@
-use aoc2023::{read_file_string, parse_line, Parse, get_numbers_on_line};
+use aoc2023::{read_file_string, Parse, get_numbers_on_line, get_data_list};
 
 fn main() {
     println!("Result: {}", solve(read_file_string("inputs/07.txt").unwrap()));
 }
 
 fn solve(data: String) -> usize {
-    let mut hands = data.lines().into_iter()
-        .map(|l| parse_line(l))
-        .collect::<Vec<PokerHand>>();
+    let mut hands: Vec<PokerHand> = get_data_list(data);
     hands.sort_by(|a, b| {
         match a.poker_type.partial_cmp(&b.poker_type).unwrap() {
             std::cmp::Ordering::Equal => highest_first_cards(&a.cards, &b.cards),
