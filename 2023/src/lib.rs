@@ -43,10 +43,14 @@ pub fn get_numbers_on_line<T>(l: &str) -> Vec<T>
     {
     let mut res = Vec::new();
     let mut it = l.chars().into_iter();
+    let mut prev = ' ';
     while let Some(c) = it.next() {
         if c.is_numeric() {
             let mut c = Some(c);
             let mut num = String::new();
+            if prev == '-' {
+                num.push('-');
+            }
             loop {
                 if c.is_none() || !c.unwrap().is_numeric(){
                     break;
@@ -56,6 +60,30 @@ pub fn get_numbers_on_line<T>(l: &str) -> Vec<T>
             }
             res.push(num.parse().unwrap());
         }
+        prev = c;
     }
     res
+}
+
+pub struct Node<T> {
+    pub data: T,
+    pub next: Option<Box<Node<T>>>,
+}
+
+pub struct LinkedList<T> {
+    pub head: Option<Box<Node<T>>>,
+}
+
+impl <T> LinkedList<T> {
+    pub fn new() -> Self {
+        LinkedList { head: None }
+    }
+
+    pub fn push(&mut self, data: T) {
+        let new_node = Box::new(Node {
+            data,
+            next: self.head.take(),
+        });
+        self.head = Some(new_node);
+    }
 }
