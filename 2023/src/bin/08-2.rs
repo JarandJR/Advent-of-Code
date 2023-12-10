@@ -8,42 +8,44 @@ fn main() {
 
 fn solve(data: String) -> usize {
     let (nodes, pattern) = parse(&data);
-    let mut at = nodes.clone()
-    .into_iter()
+    let at = nodes
+    .iter()
     .filter(|(k, _)| k.ends_with('A'))
-    .collect::<Vec<(String, Path)>>();
-    let mut pattern = pattern.chars().into_iter().cycle();
-    let mut counter = 0;
-    loop {
-        if at.clone().into_iter().all(|(k, _)| k.ends_with('Z')) {
-            break;
-        };
-        if counter % 1_000_000 == 0 {
-            println!("At: {}", counter);
-        }
+    .collect::<Vec<(&String, &Path)>>();
 
-        match pattern.next() {
-            Some('L') => {
-                at = at.clone().into_iter()
-                .map(|(_, n)| {
-                let (k, node) = nodes.get_key_value(&n.left).unwrap();
-                (k.clone(), node.clone())
-                }
-            ).collect();
-            },
-            Some('R') => {
-                at = at.clone().into_iter()
-                .map(|(_, n)| {
-                let (k, node) = nodes.get_key_value(&n.right).unwrap();
-                (k.clone(), node.clone())
-                }
-            ).collect();
-            },
-            _ => break,
+    let mut paths = Vec::new();
+    for (k, n) in at.iter() {
+        let mut counter = 0;
+        let mut node = *n;
+        let mut key = *k;
+        let mut p = pattern.chars().into_iter().cycle();
+        while !key.ends_with('Z') {
+            match p.next() {
+                Some('L') => {
+                    (key, node) = nodes.get_key_value(&node.left).unwrap();
+                },
+                Some('R') => {
+                    (key, node) = nodes.get_key_value(&node.right).unwrap();
+                },
+                _ => break,
+            }
+            counter += 1;
         }
-        counter += 1;
+        paths.push(counter);
     }
-    counter
+    let mut lcm = 1;
+    for p in paths {
+        lcm = lcm * p / gcd(lcm, p);
+    }
+    lcm
+}
+
+fn gcd(a: usize, b: usize) -> usize {
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
 }
 
 fn parse(data: &str) -> (HashMap<String, Path>, String) {
