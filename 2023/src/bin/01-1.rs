@@ -19,16 +19,11 @@ fn concat_chars_to_num(a: &char, b: &char) -> i32 {
     format!("{}{}", a, b).parse().unwrap()
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_01_1() {
-        let input = String::from("1abc2
-        pqr3stu8vwx
-        a1b2c3d4e5f
-        treb7uchet");
-        assert_eq!(142, solve(input));
-    }
+#[test]
+fn test_01_1() {
+    let input = String::from("1abc2
+    pqr3stu8vwx
+    a1b2c3d4e5f
+    treb7uchet");
+    assert_eq!(142, solve(input));
 }
