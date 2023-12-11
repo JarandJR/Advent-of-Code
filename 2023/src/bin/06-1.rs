@@ -46,14 +46,9 @@ fn parse(data: &str) -> Vec<Game> {
     games
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_06_1() {
-        let input = String::from("Time:      7  15   30
-    Distance:  9  40  200");
-        assert_eq!(288, solve(input));
-    }
+#[test]
+fn test_06_1() {
+    let input = String::from("Time:      7  15   30
+Distance:  9  40  200");
+    assert_eq!(288, solve(input));
 }

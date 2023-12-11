@@ -38,13 +38,8 @@ fn concat(list: Vec<i64>) -> i64 {
     res.parse().unwrap()
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_06_2() {
-        assert_eq!(71503, solve("Time:      7  15   30
-        Distance:  9  40  200".to_string()));
-    }
+#[test]
+fn test_06_2() {
+    assert_eq!(71503, solve("Time:      7  15   30
+    Distance:  9  40  200".to_string()));
 }
