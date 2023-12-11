@@ -58,21 +58,16 @@ impl Parse for Tree {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[test]
+fn test_09_1() {
+    assert_eq!(114, solve("0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45".to_string()));
+}
 
-    #[test]
-    fn test_09_1() {
-        assert_eq!(114, solve("0 3 6 9 12 15
-    1 3 6 10 15 21
-    10 13 16 21 30 45".to_string()));
-    }
-
-    #[test]
-    fn test_09_2() {
-        assert_eq!(2, solve2("0 3 6 9 12 15
-    1 3 6 10 15 21
-    10 13 16 21 30 45".to_string()));
-    }
+#[test]
+fn test_09_2() {
+    assert_eq!(2, solve2("0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45".to_string()));
 }
