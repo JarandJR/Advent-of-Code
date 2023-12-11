@@ -59,14 +59,19 @@ fn concat_chars_to_num(a: &char, b: &char) -> i32 {
     format!("{}{}", a, b).parse().unwrap()
 }
 
-#[test]
-fn test_01_2() {
-    let input = String::from("two1nine
-    eightwothree
-    abcone2threexyz
-    xtwone3four
-    4nineeightseven2
-    zoneight234
-    7pqrstsixteen");
-    assert_eq!(281, solve(input));
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_01_2() {
+        let input = String::from("two1nine
+        eightwothree
+        abcone2threexyz
+        xtwone3four
+        4nineeightseven2
+        zoneight234
+        7pqrstsixteen");
+        assert_eq!(281, solve(input));
+    }
 }
