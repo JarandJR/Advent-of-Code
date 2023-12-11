@@ -58,20 +58,25 @@ impl Parse for Tree {
     }
 }
 
-#[test]
-fn test_10_1a() {
-    assert_eq!(8, solve("..F7.
-.FJ|.
-SJ.L7
-|F--J
-LJ...".to_string()));
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[test]
-fn test_10_1b() {
-    assert_eq!(4, solve2(".....
-.S-7.
-.|.|.
-.L-J.
-.....".to_string()));
+    #[test]
+    fn test_10_1a() {
+        assert_eq!(8, solve("..F7.
+    .FJ|.
+    SJ.L7
+    |F--J
+    LJ...".to_string()));
+    }
+
+    #[test]
+    fn test_10_1b() {
+        assert_eq!(4, solve2(".....
+    .S-7.
+    .|.|.
+    .L-J.
+    .....".to_string()));
+    }
 }
