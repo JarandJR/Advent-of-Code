@@ -89,22 +89,17 @@ fn get_number(l: &str, i: usize) -> i32 {
     res.parse().unwrap()
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_03_2() {
-        let input = String::from("467..114..
-    ...*......
-    ..35..633.
-    ......#...
-    617*......
-    .....+.58.
-    ..592.....
-    ......755.
-    ...$.*....
-    .664.598..");
-        assert_eq!(467835, solve(input));
-    }
+#[test]
+fn test_03_2() {
+    let input = String::from("467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..");
+    assert_eq!(467835, solve(input));
 }

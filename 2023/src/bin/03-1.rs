@@ -85,22 +85,17 @@ fn get_number(chars: &Vec<char>) -> i32 {
     res.parse().unwrap()
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_03_1() {
-        let input = String::from("467..114..
-    ...*......
-    ..35..633.
-    ......#...
-    617*......
-    .....+.58.
-    ..592.....
-    ......755.
-    ...$.*....
-    .664.598..");
-        assert_eq!(4361, solve(input));
-    }
+#[test]
+fn test_03_1() {
+    let input = String::from("467..114..
+...*......
+..35..633.
+......#...
+617*......
+.....+.58.
+..592.....
+......755.
+...$.*....
+.664.598..");
+    assert_eq!(4361, solve(input));
 }

@@ -1,7 +1,7 @@
 use aoc2023::{read_file_string, get_data_list, Parse, get_numbers_on_line};
 
 fn main() {
-    let data = read_file_string("inputs/09.txt").unwrap();
+    let data = read_file_string("inputs/10.txt").unwrap();
     println!("Result 1: {}", solve(data.clone()));
     println!("Result 2: {}", solve2(data.clone()));
 }
