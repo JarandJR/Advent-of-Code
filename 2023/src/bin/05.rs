@@ -102,14 +102,19 @@ fn from(item: Map) -> usize {
     }
 }
 
-#[test]
-fn test_05_1() {
-    assert_eq!(35, solve(TEST_STRING.to_string(), true));
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[test]
-fn test_05_2() {
-    assert_eq!(46, solve(TEST_STRING.to_string(), false));
+    #[test]
+    fn test_05_1() {
+        assert_eq!(35, solve(TEST_STRING.to_string(), true));
+    }
+
+    #[test]
+    fn test_05_2() {
+        assert_eq!(46, solve(TEST_STRING.to_string(), false));
+    }
 }
 
 const TEST_STRING: &str = "seeds: 79 14 55 13
