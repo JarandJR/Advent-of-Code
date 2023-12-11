@@ -72,29 +72,24 @@ fn parse_path(line: &str) -> (String, Path) {
         })
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[test]
+fn test_08_1a() {
+    assert_eq!(2, solve("RL
 
-    #[test]
-    fn test_08_1a() {
-        assert_eq!(2, solve("RL
+AAA = (BBB, CCC)
+BBB = (DDD, EEE)
+CCC = (ZZZ, GGG)
+DDD = (DDD, DDD)
+EEE = (EEE, EEE)
+GGG = (GGG, GGG)
+ZZZ = (ZZZ, ZZZ)".to_string()));
+}
 
-    AAA = (BBB, CCC)
-    BBB = (DDD, EEE)
-    CCC = (ZZZ, GGG)
-    DDD = (DDD, DDD)
-    EEE = (EEE, EEE)
-    GGG = (GGG, GGG)
-    ZZZ = (ZZZ, ZZZ)".to_string()));
-    }
+#[test]
+fn test_08_1b() {
+    assert_eq!(6, solve("LLR
 
-    #[test]
-    fn test_08_1b() {
-        assert_eq!(6, solve("LLR
-
-    AAA = (BBB, BBB)
-    BBB = (AAA, ZZZ)
-    ZZZ = (ZZZ, ZZZ)".to_string()));
-    }
+AAA = (BBB, BBB)
+BBB = (AAA, ZZZ)
+ZZZ = (ZZZ, ZZZ)".to_string()));
 }
