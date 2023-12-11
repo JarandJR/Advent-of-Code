@@ -111,16 +111,11 @@ fn get_card_number_string(c: char) -> String {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_07_1() {
-        assert_eq!(6440, solve("32T3K 765
-    T55J5 684
-    KK677 28
-    KTJJT 220
-    QQQJA 483".to_string()));
-    }
+#[test]
+fn test_07_1() {
+    assert_eq!(6440, solve("32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483".to_string()));
 }
