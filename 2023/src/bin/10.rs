@@ -4,10 +4,12 @@ use aoc2023::read_file_string;
 
 fn main() {
     let data = read_file_string("inputs/10.txt").unwrap();
-    println!("Result 1: {}", solve(data.clone()));
+    let (s1, s2) = solve(data);
+    println!("Result 1: {}", s1);
+    println!("Result 2: {}", s2);
 }
 
-fn solve(data: String) -> i32 {
+fn solve(data: String) -> (i32, usize) {
     let (mut pipes, start) = parse(&data);
     let start = start.unwrap();
     for dir in Direction::directions() {
@@ -55,13 +57,39 @@ fn solve(data: String) -> i32 {
             pipes[next_y][next_x].entered = Some(Direction::opposite(&next_dir));
         }
     }
-    pipes
+    let s1 = pipes
         .iter()
         .flat_map(|pipe_vec| pipe_vec.iter())
         .filter(|pipe| pipe.visited)
         .map(|pipe| pipe.dist)
         .max()
-        .unwrap_or(0)
+        .unwrap_or(0);
+    
+    let mut count = 0;
+    for v in &pipes {
+        let mut out = true;
+        let last = v.last().unwrap();
+        for p in v {
+            if p == last {
+                continue;
+            }
+            if p.visited {
+                if [
+                    '|', '7', 'F', 
+                ].contains(&p.sym) {
+                    out = match out {
+                        true => false,
+                        false => true,
+                    };
+                }  
+            } else {
+                if !out {
+                    count += 1;
+                }
+            }
+        }
+    }
+    (s1, count)
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -96,7 +124,7 @@ impl Direction {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Eq, Hash)]
 struct Point {
     x: i32, 
     y: i32,
@@ -232,7 +260,7 @@ fn test_10_1a() {
 .S-7.
 .|.|.
 .L-J.
-    .....".to_string()));
+.....".to_string()).0);
 }
 
 #[test]
@@ -241,5 +269,46 @@ fn test_10_1b() {
 .FJ|.
 SJ.L7
 |F--J
-LJ...".to_string()));
+LJ...".to_string()).0);
+}
+
+#[test]
+fn test_10_2a() {
+    assert_eq!(8, solve(".F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...".to_string()).1);
+}
+
+#[test]
+fn test_10_2b() {
+    assert_eq!(10, solve("FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L".to_string()).1);
+}
+
+#[test]
+fn test_10_2c() {
+    assert_eq!(4, solve("...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........".to_string()).1);
 }
