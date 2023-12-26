@@ -1,3 +1,4 @@
+use std::sync::{Arc, Mutex, Condvar};
 use aoc2023::read_file_string;
 
 fn main() {
@@ -7,54 +8,99 @@ fn main() {
 
 fn solve(data: String) -> usize {
     let (map, start, end) = parse(&data);
-    let mut max = 0;
-    let mut paths = Vec::new();
-    paths.push(Path { tiles: std::collections::HashSet::new(), length: 0, at: start });
+    let map = Arc::new(map);
+    let max = Arc::new(Mutex::new(0));
+    let paths = Arc::new(Mutex::new(vec![Path {
+        tiles: std::collections::HashSet::new(),
+        length: 0,
+        at: start,
+    }]));
+    let mut threads = Vec::new();
+    let cond = Arc::new((Mutex::new(false), Condvar::new()));
 
-    while let Some(mut path) = paths.pop() {
+
+    loop {
+        let cond_copy = Arc::clone(&cond);
+        let (lock, c) = &*cond;
+        {
+            let mut wait = lock.lock().unwrap();
+            while *wait {
+                wait = c.wait(wait).unwrap();
+                if threads.is_empty() {
+                    break;
+                }
+            }
+        }
+        let path = paths.lock().unwrap().pop();
+        if path.is_none() {
+            break;
+        }
+        let mut path = path.unwrap();
         path.tiles.insert(path.at);
         let mut prev = Some(path.at);
 
-        loop {
-            let mut neighbors: Vec<(usize, usize)> = get_neighbors(&map, &path.at, prev);
-            let mut next = neighbors.pop();
-            if next.is_none() {
-                break;
-            }
-            if path.tiles.contains(&next.unwrap()) {
-                while let Some(n) = neighbors.pop() {
-                    next = Some(n);
-                    if !path.tiles.contains(&next.unwrap()) {
-                        break;
+        let max_clone = Arc::clone(&max);
+        let paths_clone = Arc::clone(&paths);
+        let map_clone = Arc::clone(&map);
+        threads.push(std::thread::spawn(move || {
+            loop {
+                let mut neighbors: Vec<(usize, usize)> = get_neighbors(&map_clone, &path.at, prev);
+                let mut next = neighbors.pop();
+                if next.is_none() {
+                    let (lock, c) = &*cond_copy;
+                    *lock.lock().unwrap() = false;
+                    c.notify_all();
+                    break;
+                }
+                if path.tiles.contains(&next.unwrap()) {
+                    while let Some(n) = neighbors.pop() {
+                        next = Some(n);
+                        if !path.tiles.contains(&next.unwrap()) {
+                            break;
+                        }
                     }
                 }
-            }
-            if path.tiles.contains(&next.unwrap()) {
-                break;
-            }
-
-            path.length += 1;
-            prev = Some(path.at);
-            path.at = next.unwrap();
-            for n in neighbors {
-                if path.tiles.contains(&n) {
-                    continue;
+                if path.tiles.contains(&next.unwrap()) {
+                    let (lock, c) = &*cond_copy;
+                    *lock.lock().unwrap() = false;
+                    c.notify_all();
+                    break;
                 }
-                let mut neighbor = Path { tiles: path.tiles.clone(), length: path.length, at: n };
-                neighbor.tiles.insert(neighbor.at);
-                paths.push(neighbor);
-            }
-            path.tiles.insert(path.at);
-            if path.at == end {
-                if path.length > max {
-                    max = path.length;
-                }
-                break;
-            }
-        }
 
+                path.length += 1;
+                prev = Some(path.at);
+                path.at = next.unwrap();
+                for n in neighbors {
+                    if path.tiles.contains(&n) {
+                        continue;
+                    }
+                    let mut neighbor = Path { tiles: path.tiles.clone(), length: path.length, at: n };
+                    neighbor.tiles.insert(neighbor.at);
+                    paths_clone.lock().unwrap().push(neighbor);
+                    let (lock, c) = &*cond_copy;
+                    *lock.lock().unwrap() = false;
+                    c.notify_all();
+                }
+                path.tiles.insert(path.at);
+                if path.at == end {
+                    let (lock, c) = &*cond_copy;
+                    *lock.lock().unwrap() = false;
+                    c.notify_all();
+                    let mut m = max_clone.lock().unwrap();
+                    if path.length > *m {
+                        println!("New max: {}", path.length);
+                        *m = path.length;
+                    }
+                    break;
+                }
+            }
+        }));
+        let (lock, _) = &*cond;
+        *lock.lock().unwrap() = true;
     }
-    max
+    threads.into_iter().for_each(|t| t.join().unwrap());
+    let m = max.lock().unwrap();
+    *m
 }
 
 fn get_neighbors(map: &Vec<Vec<Terrain>>, at: &(usize, usize), prev: Option<(usize, usize)>) -> Vec<(usize, usize)> {
