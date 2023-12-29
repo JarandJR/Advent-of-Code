@@ -5,29 +5,6 @@ use aoc2023::read_file_string;
 fn main() {
     let data = read_file_string("inputs/23.txt").unwrap();
     println!("Result: {}", solve(data));
-    /*println!("Result: {}", solve("#.#####################
-#.......#########...###
-#######.#########.#.###
-###.....#.>.>.###.#.###
-###v#####.#v#.###.#.###
-###.>...#.#.#.....#...#
-###v###.#.#.#########.#
-###...#.#.#.......#...#
-#####.#.#.#######.#.###
-#.....#.#.#.......#...#
-#.#####.#.#.#########v#
-#.#...#...#...###...>.#
-#.#.#v#######v###.###v#
-#...#.>.#...>.>.#.###.#
-#####v#.#.###v#.#.###.#
-#.....#...#...#.#.#...#
-#.#########.###.#.#.###
-#...###...#...#...#.###
-###.###.#.###v#####v###
-#...#...#.#.>.>.#.>.###
-#.###.###.#.###.#.#v###
-#.....###...###...#...#
-#####################.#".to_string()));*/
 }
 
 fn solve(data: String) -> usize {
@@ -66,7 +43,7 @@ fn solve(data: String) -> usize {
                     while *wait {
                         f_threads.lock().unwrap()[i] = true;
                         if f_threads.lock().unwrap().iter().all(|x| *x) {
-                            println!("Thread {} FINISHED", i);
+                            println!("Thread {} finished waiting", i);
                             break;
                         }
                         wait = c.wait(wait).unwrap();
