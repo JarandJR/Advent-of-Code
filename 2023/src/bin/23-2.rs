@@ -44,41 +44,51 @@ fn solve(data: String) -> usize {
     
     let num_cores = num_cpus::get();
     println!("Using {} cores", num_cores);
-    for _ in 0..num_cores {
+    let finished_threads = Arc::new(Mutex::new(vec![false;num_cores]));
+    for i in 0..num_cores {
         let cond_clone = Arc::clone(&cond);
         let max_clone = Arc::clone(&max);
         let paths_clone = Arc::clone(&paths);
         let map_clone = Arc::clone(&map);
+        let f_threads = Arc::clone(&finished_threads);
         threads.push(std::thread::spawn(move || {
             loop {
-                let (lock, c) = &*cond_clone;
                 {
                     let value = paths_clone.lock().unwrap().is_empty();
                     mutate_cond_var(&cond_clone, value);
                 }
+                let (lock, c) = &*cond_clone;
                 {
                     let mut wait = lock.lock().unwrap();
                     if *wait {
-                        println!("Waiting");
+                        println!("Thread {} waiting", i);
                     }
                     while *wait {
-                        if paths_clone.lock().unwrap().is_empty() {
-                            println!("Not waiting, no more paths");
+                        f_threads.lock().unwrap()[i] = true;
+                        if f_threads.lock().unwrap().iter().all(|x| *x) {
+                            println!("Thread {} FINISHED", i);
                             break;
                         }
                         wait = c.wait(wait).unwrap();
                         if !*wait {
-                            println!("Done waiting");
+                            println!("Thread {} awake", i);
                         }
                     }
                 }
-                let path = paths_clone.lock().unwrap().pop();
                 {
-                    if path.is_none() && paths_clone.lock().unwrap().is_empty() {
+                    if f_threads.lock().unwrap().iter().all(|x| *x) {
+                        println!("Thread {} exiting", i);
                         mutate_cond_var(&cond_clone, false);
-                        println!("Finished");
                         break;
                     }
+                }
+                let path = paths_clone.lock().unwrap().pop();
+                if path.is_none() {
+                    println!("Thread {} no path", i);
+                    continue;
+                }
+                {
+                    f_threads.lock().unwrap()[i] = false;
                 }
                 
                 let mut path = path.unwrap();
@@ -87,7 +97,6 @@ fn solve(data: String) -> usize {
                     let mut neighbors = get_neighbors(&map_clone, &path.at, &path.tiles);
                     let next = neighbors.pop();
                     if next.is_none() {
-                        mutate_cond_var(&cond_clone, false);
                         break;
                     }
     
@@ -99,12 +108,12 @@ fn solve(data: String) -> usize {
                         paths_clone.lock().unwrap().push(neighbor);
                     }
                     if !neighbors.is_empty() {
-                        mutate_cond_var(&cond_clone, false);
+                        let value = paths_clone.lock().unwrap().is_empty();
+                        mutate_cond_var(&cond_clone, value);
                     }
     
                     path.tiles.insert(path.at);
                     if path.at == end {
-                        mutate_cond_var(&cond_clone, false);
                         let mut m = max_clone.lock().unwrap();
                         if path.length > *m {
                             println!("New max: {}", path.length);
@@ -127,7 +136,7 @@ fn mutate_cond_var(cond_clone: &Arc<(Mutex<bool>, Condvar)>, value: bool) {
     let (lock, c) = &**cond_clone;
     *lock.lock().unwrap() = value;
     c.notify_all();
-}
+ }
 
 fn get_neighbors(map: &Vec<Vec<Terrain>>, at: &(usize, usize), prevs: &std::collections::HashSet<(usize, usize)>) -> Vec<(usize, usize)> {
     let mut neighbors = Vec::new();
