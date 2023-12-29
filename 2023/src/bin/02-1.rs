@@ -1,7 +1,7 @@
 use aoc2023::read_file_string;
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/02-1.txt").unwrap()));
+    println!("Result {}", solve(read_file_string("inputs/02.txt").unwrap()));
 }
 
 fn solve(data: String) -> i32 {
