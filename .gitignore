@@ -2,4 +2,4 @@ target/
 .vscode/
 .idea/
 *.lock
-inputs/*
+inputs/
