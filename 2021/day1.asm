@@ -44,7 +44,8 @@ _start:
 loop:
 	ldrb r2, [r0, r1]	// Load byte at r1 from input in r2
 	cmp r2, #0			// Compare for string-terminater
-	beq endloop 		// Equal, branch endloop
+  	beq endloop 		// Equal, branch endloop
+if:
 	cmp r2, #13 		// Compare for \r
 	bne else 			// Not equal, branch else
 	cmp r3, r4  		// Compare previous number with current number
