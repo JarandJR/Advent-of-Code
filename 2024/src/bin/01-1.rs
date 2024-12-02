@@ -57,7 +57,7 @@ fn parse(day: &str) -> (BinaryHeap<Reverse<i32>>, BinaryHeap<Reverse<i32>>) {
 #[test]
 fn day01_1() {
     use std::fs::remove_file;
-    let file_name = "test_01";
+    let file_name = "test_01_1";
     let file_path = format!("inputs/{}.txt", file_name);
     {
         // Setup for test

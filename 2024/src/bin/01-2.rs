@@ -54,7 +54,7 @@ fn parse(day: &str) -> (Vec<usize>, HashMap<usize, usize>) {
 #[test]
 fn day01_2() {
     use std::fs::remove_file;
-    let file_name = "test_01";
+    let file_name = "test_01_2";
     let file_path = format!("inputs/{}.txt", file_name);
     {
         // Setup for test
