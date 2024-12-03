@@ -54,7 +54,8 @@ fn parse_and_solve(day: &str) -> usize {
                                 }
                                 // Unsafe
                                 0 | (1 << 7)
-                            } else { // Decreasing
+                            } else {
+                                // Decreasing
                                 if a < b {
                                     // Unsafe
                                     return 0 | (1 << 7);
@@ -73,19 +74,21 @@ fn parse_and_solve(day: &str) -> usize {
                                 let diff = b - a;
                                 if diff > 0 && diff < 4 {
                                     // Increasing
-                                    return status | (1 << 5); 
+                                    return status | (1 << 5);
                                 }
                                 // Unsafe
                                 return 1 << 7;
                             }
                             let diff = a - b;
-                                if diff > 0 && diff < 4 {
-                                    // Decreasing
-                                    return status;
-                                }
+                            if diff > 0 && diff < 4 {
+                                // Decreasing
+                                return status;
+                            }
                             1 << 7
                         }
-                    }) >> 7 ^ 1) as usize
+                    })
+                    >> 7
+                    ^ 1) as usize
             });
     }
     0
