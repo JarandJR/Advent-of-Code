@@ -19,9 +19,17 @@ fn is_safe<'a>(mut report: impl Iterator<Item = &'a u32>) -> bool {
         match increasing {
             None => increasing = Some(a < b),
             // Swap from increasing to decreasing
-            Some(true) => if b < a { return false; },
+            Some(true) => {
+                if b < a {
+                    return false;
+                }
+            }
             // Swap from decreasing to increasing
-            Some(false) => if a < b { return false; },
+            Some(false) => {
+                if a < b {
+                    return false;
+                }
+            }
         }
         a = b;
     }
@@ -48,7 +56,8 @@ fn parse_and_solve(day: &str) -> usize {
                             }
                             num
                         }))
-                    }).collect::<Vec<u32>>();
+                    })
+                    .collect::<Vec<u32>>();
                 if is_safe(report.iter()) {
                     return acc + 1;
                 }
@@ -64,7 +73,7 @@ fn parse_and_solve(day: &str) -> usize {
     }
     0
 }
-// 692
+
 #[test]
 fn day02_2() {
     use std::fs::{remove_file, File};
