@@ -37,7 +37,7 @@ fn is_safe<'a>(mut report: impl Iterator<Item = &'a u32>) -> bool {
 }
 
 fn parse_and_solve(day: &str) -> usize {
-    if let Ok(file) = File::open(format!("inputs/{}.txt", day)) {
+    if let Ok(file) = File::open(format!("2024/inputs/{}.txt", day)) {
         let reader = BufReader::new(file);
         return reader
             .split(NEW_LINE)

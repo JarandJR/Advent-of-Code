@@ -1,17 +1,20 @@
 use std::collections::HashMap;
 
-use aoc2023::read_file_string ;
+use aoc2023::read_file_string;
 
 fn main() {
-    println!("Result: {}", solve(read_file_string("inputs/08.txt").unwrap()));
+    println!(
+        "Result: {}",
+        solve(read_file_string("inputs/08.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> usize {
     let (nodes, pattern) = parse(&data);
     let at = nodes
-    .iter()
-    .filter(|(k, _)| k.ends_with('A'))
-    .collect::<Vec<(&String, &Path)>>();
+        .iter()
+        .filter(|(k, _)| k.ends_with('A'))
+        .collect::<Vec<(&String, &Path)>>();
 
     let mut paths = Vec::new();
     for (k, n) in at.iter() {
@@ -23,10 +26,10 @@ fn solve(data: String) -> usize {
             match p.next() {
                 Some('L') => {
                     (key, node) = nodes.get_key_value(&node.left).unwrap();
-                },
+                }
                 Some('R') => {
                     (key, node) = nodes.get_key_value(&node.right).unwrap();
-                },
+                }
                 _ => break,
             }
             counter += 1;
@@ -72,17 +75,23 @@ fn parse_path(line: &str) -> (String, Path) {
     let mut it = line.trim().split(" ").into_iter();
     let key = it.next().unwrap().to_string();
     it.next();
-    let left = it.next().unwrap().to_string()
-    .replace("(", "").replace(",", "")
-    .to_string();
-    let right = it.next().unwrap().to_string()
-    .replace(")", "").to_string();
-    (key, Path { left, right,})
+    let left = it
+        .next()
+        .unwrap()
+        .to_string()
+        .replace("(", "")
+        .replace(",", "")
+        .to_string();
+    let right = it.next().unwrap().to_string().replace(")", "").to_string();
+    (key, Path { left, right })
 }
 
 #[test]
 fn test_08_2() {
-    assert_eq!(6, solve("LR
+    assert_eq!(
+        6,
+        solve(
+            "LR
 
 11A = (11B, XXX)
 11B = (XXX, 11Z)
@@ -91,5 +100,8 @@ fn test_08_2() {
 22B = (22C, 22C)
 22C = (22Z, 22Z)
 22Z = (22B, 22B)
-XXX = (XXX, XXX)".to_string()));
+XXX = (XXX, XXX)"
+                .to_string()
+        )
+    );
 }

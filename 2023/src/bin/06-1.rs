@@ -1,7 +1,10 @@
-use aoc2023::{read_file_string, get_numbers_on_line};
+use aoc2023::{get_numbers_on_line, read_file_string};
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/06.txt").unwrap()));
+    println!(
+        "Result {}",
+        solve(read_file_string("inputs/06.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> i32 {
@@ -41,14 +44,19 @@ fn parse(data: &str) -> Vec<Game> {
     let mut games = Vec::new();
 
     for i in 0..times.len() {
-        games.push(Game { time: times[i], record: records[i] });
+        games.push(Game {
+            time: times[i],
+            record: records[i],
+        });
     }
     games
 }
 
 #[test]
 fn test_06_1() {
-    let input = String::from("Time:      7  15   30
-Distance:  9  40  200");
+    let input = String::from(
+        "Time:      7  15   30
+Distance:  9  40  200",
+    );
     assert_eq!(288, solve(input));
 }

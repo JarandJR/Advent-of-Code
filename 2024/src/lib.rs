@@ -24,7 +24,7 @@ pub const DIRECTIONS: [(i32, i32); 8] = [
 ];
 
 pub fn parse_into_byte_lines(day: &str) -> Option<impl Iterator<Item = Vec<u8>>> {
-    if let Ok(file) = File::open(format!("inputs/{}.txt", day)) {
+    if let Ok(file) = File::open(format!("2024/inputs/{}.txt", day)) {
         let reader = BufReader::new(file);
         return Some(reader.split(NEW_LINE).flat_map(|line| line.ok()));
     }
@@ -33,7 +33,7 @@ pub fn parse_into_byte_lines(day: &str) -> Option<impl Iterator<Item = Vec<u8>>>
 
 pub fn parse_into_lines(day: &str) -> Option<impl Iterator<Item = String>> {
     use std::io::BufRead;
-    if let Ok(file) = std::fs::File::open(format!("inputs/{}.txt", day)) {
+    if let Ok(file) = std::fs::File::open(format!("2024/inputs/{}.txt", day)) {
         let reader = std::io::BufReader::new(file);
         return Some(reader.lines().flat_map(|line| line.ok()));
     }

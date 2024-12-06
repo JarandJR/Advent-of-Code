@@ -1,4 +1,4 @@
-use std::{fmt::Debug, f32::INFINITY};
+use std::{f32::INFINITY, fmt::Debug};
 
 use aoc2023::read_file_string;
 
@@ -20,8 +20,9 @@ fn solve(data: String) -> (i32, usize) {
 
         if pipes[oy][ox].ep1.is_none() || pipes[oy][ox].ep2.is_none() {
             continue;
-        } else if pipes[oy][ox].ep1.unwrap() != Direction::opposite(&dir) && 
-        pipes[oy][ox].ep2.unwrap() != Direction::opposite(&dir) {
+        } else if pipes[oy][ox].ep1.unwrap() != Direction::opposite(&dir)
+            && pipes[oy][ox].ep2.unwrap() != Direction::opposite(&dir)
+        {
             continue;
         }
         let (mut next_x, mut next_y) = pipes[oy][ox].at.to_tuple();
@@ -53,7 +54,7 @@ fn solve(data: String) -> (i32, usize) {
                 pipes[next_y][next_x].visited = true;
                 pipes[next_y][next_x].dist = counter;
             }
-            
+
             pipes[next_y][next_x].entered = Some(Direction::opposite(&next_dir));
         }
     }
@@ -64,7 +65,7 @@ fn solve(data: String) -> (i32, usize) {
         .map(|pipe| pipe.dist)
         .max()
         .unwrap_or(0);
-    
+
     let mut count = 0;
     for v in &pipes {
         let mut out = true;
@@ -74,14 +75,12 @@ fn solve(data: String) -> (i32, usize) {
                 continue;
             }
             if p.visited {
-                if [
-                    '|', '7', 'F', 
-                ].contains(&p.sym) {
+                if ['|', '7', 'F'].contains(&p.sym) {
                     out = match out {
                         true => false,
                         false => true,
                     };
-                }  
+                }
             } else {
                 if !out {
                     count += 1;
@@ -94,7 +93,7 @@ fn solve(data: String) -> (i32, usize) {
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 enum Direction {
-    North, 
+    North,
     South,
     West,
     East,
@@ -105,28 +104,33 @@ impl Direction {
         match dir {
             Direction::North => (0, -1),
             Direction::South => (0, 1),
-            Direction::West  => (-1, 0),
-            Direction::East  => (1, 0),
+            Direction::West => (-1, 0),
+            Direction::East => (1, 0),
         }
     }
 
     fn directions() -> Vec<Direction> {
-        vec![Direction::North, Direction::South, Direction::West, Direction::East]
+        vec![
+            Direction::North,
+            Direction::South,
+            Direction::West,
+            Direction::East,
+        ]
     }
 
     fn opposite(dir: &Direction) -> Direction {
         match dir {
             Direction::North => Direction::South,
             Direction::South => Direction::North,
-            Direction::West  => Direction::East,
-            Direction::East  => Direction::West,
+            Direction::West => Direction::East,
+            Direction::East => Direction::West,
         }
     }
 }
 
 #[derive(Debug, PartialEq, Clone, Eq, Hash)]
 struct Point {
-    x: i32, 
+    x: i32,
     y: i32,
 }
 
@@ -149,7 +153,7 @@ struct Pipe {
 
 impl Pipe {
     fn new(at: Point, sym: char) -> Self {
-        let  dirs = Pipe::get_directions(sym);
+        let dirs = Pipe::get_directions(sym);
         let mut ep1 = None;
         let mut ep2 = None;
         if dirs.is_some() {
@@ -157,10 +161,18 @@ impl Pipe {
             ep1 = Some(e1);
             ep2 = Some(e2);
         }
-        Self { sym, at, ep1, ep2, visited: false , entered: None , dist: INFINITY as i32 }
+        Self {
+            sym,
+            at,
+            ep1,
+            ep2,
+            visited: false,
+            entered: None,
+            dist: INFINITY as i32,
+        }
     }
 
-    fn get_directions(sym: char) -> Option<(Direction, Direction)>{
+    fn get_directions(sym: char) -> Option<(Direction, Direction)> {
         match sym {
             '|' => Some((Direction::North, Direction::South)),
             '-' => Some((Direction::West, Direction::East)),
@@ -183,36 +195,31 @@ impl Pipe {
     }
 
     fn is_valid_move(&self, dir: &Direction, other: &Pipe) -> bool {
-        if self.ep1.is_none() || 
-        self.ep2.is_none() {
+        if self.ep1.is_none() || self.ep2.is_none() {
             return false;
         }
-        if other.ep1.is_none() || 
-        other.ep2.is_none() {
+        if other.ep1.is_none() || other.ep2.is_none() {
             if other.sym == 'S' {
                 return true;
             }
             return false;
         }
-        if dir != self.ep1.as_ref().unwrap() && 
-        dir != self.ep2.as_ref().unwrap() {
+        if dir != self.ep1.as_ref().unwrap() && dir != self.ep2.as_ref().unwrap() {
             return false;
         }
         let (x, y) = Direction::to_value(dir);
-        dir == &Direction::opposite(other.ep1.as_ref().unwrap()) || 
-        dir == &Direction::opposite(other.ep2.as_ref().unwrap()) && 
-        self.at.x + x == other.at.x && 
-        self.at.y + y == other.at.y
+        dir == &Direction::opposite(other.ep1.as_ref().unwrap())
+            || dir == &Direction::opposite(other.ep2.as_ref().unwrap())
+                && self.at.x + x == other.at.x
+                && self.at.y + y == other.at.y
     }
 
     fn get_next_dir(&self) -> Option<Direction> {
         let dir = &self.entered.unwrap();
-        if self.ep1.is_none() || 
-        self.ep2.is_none() {
+        if self.ep1.is_none() || self.ep2.is_none() {
             return None;
         }
-        if dir != self.ep1.as_ref().unwrap() && 
-        dir != self.ep2.as_ref().unwrap() {
+        if dir != self.ep1.as_ref().unwrap() && dir != self.ep2.as_ref().unwrap() {
             return None;
         }
         if dir == self.ep1.as_ref().unwrap() {
@@ -256,25 +263,42 @@ fn get_other(dir: Direction, x: usize, y: usize) -> (usize, usize) {
 
 #[test]
 fn test_10_1a() {
-    assert_eq!(4, solve(".....
+    assert_eq!(
+        4,
+        solve(
+            ".....
 .S-7.
 .|.|.
 .L-J.
-.....".to_string()).0);
+....."
+                .to_string()
+        )
+        .0
+    );
 }
 
 #[test]
 fn test_10_1b() {
-    assert_eq!(8, solve("..F7.
+    assert_eq!(
+        8,
+        solve(
+            "..F7.
 .FJ|.
 SJ.L7
 |F--J
-LJ...".to_string()).0);
+LJ..."
+                .to_string()
+        )
+        .0
+    );
 }
 
 #[test]
 fn test_10_2a() {
-    assert_eq!(8, solve(".F----7F7F7F7F-7....
+    assert_eq!(
+        8,
+        solve(
+            ".F----7F7F7F7F-7....
 .|F--7||||||||FJ....
 .||.FJ||||||||L7....
 FJL7L7LJLJ||LJ.L-7..
@@ -283,12 +307,19 @@ L--J.L7...LJS7F-7L7.
 ....L7.F7||L7|.L7L7|
 .....|FJLJ|FJ|F7|.LJ
 ....FJL-7.||.||||...
-....L---J.LJ.LJLJ...".to_string()).1);
+....L---J.LJ.LJLJ..."
+                .to_string()
+        )
+        .1
+    );
 }
 
 #[test]
 fn test_10_2b() {
-    assert_eq!(10, solve("FF7FSF7F7F7F7F7F---7
+    assert_eq!(
+        10,
+        solve(
+            "FF7FSF7F7F7F7F7F---7
 L|LJ||||||||||||F--J
 FL-7LJLJ||||||LJL-77
 F--JF--7||LJLJ7F7FJ-
@@ -297,12 +328,19 @@ L---JF-JLJ.||-FJLJJ7
 |FFJF7L7F-JF7|JL---7
 7-L-JL7||F7|L7F-7F7|
 L.L7LFJ|||||FJL7||LJ
-L7JLJL-JLJLJL--JLJ.L".to_string()).1);
+L7JLJL-JLJLJL--JLJ.L"
+                .to_string()
+        )
+        .1
+    );
 }
 
 #[test]
 fn test_10_2c() {
-    assert_eq!(4, solve("...........
+    assert_eq!(
+        4,
+        solve(
+            "...........
 .S-------7.
 .|F-----7|.
 .||.....||.
@@ -310,5 +348,9 @@ fn test_10_2c() {
 .|L-7.F-J|.
 .|..|.|..|.
 .L--J.L--J.
-...........".to_string()).1);
+..........."
+                .to_string()
+        )
+        .1
+    );
 }

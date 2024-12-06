@@ -33,7 +33,7 @@ fn solve(data: String, multi: usize) -> usize {
 
     let mut sum = 0;
     for g in 0..galaxies {
-        for g2 in g+1..galaxies {
+        for g2 in g + 1..galaxies {
             let (x, y) = map[&g];
             let (x2, y2) = map[&g2];
             sum += dist(x, y, x2, y2);
@@ -61,33 +61,30 @@ impl From<char> for Space {
 fn parse(data: String, m: usize) -> Vec<Vec<Space>> {
     let mut space = data
         .lines()
-        .map(|line| line
-            .chars().map(|c| Space::from(c))
-            .collect::<Vec<_>>())
+        .map(|line| line.chars().map(|c| Space::from(c)).collect::<Vec<_>>())
         .collect::<Vec<_>>();
     let mut y = 0;
     while y < space.len() {
-            if space[y].iter().all(|c| *c == Space::Empty(1)) {
-                space
-                .remove(y);
-                space
-                .insert(y, vec![Space::Empty(m); space[y].len()]);
-            } else {
-            }
-            y += 1;
+        if space[y].iter().all(|c| *c == Space::Empty(1)) {
+            space.remove(y);
+            space.insert(y, vec![Space::Empty(m); space[y].len()]);
+        } else {
         }
-    
+        y += 1;
+    }
+
     let mut x = 0;
     while x < space[0].len() {
-            if space.iter().all(|line| line[x] == Space::Empty(1) || line[x] == Space::Empty(m)) {
-                space
-                .iter_mut()
-                .for_each(|line| {
-                    line[x] = Space::Empty(m);
-                });
-            }
-            x += 1;
+        if space
+            .iter()
+            .all(|line| line[x] == Space::Empty(1) || line[x] == Space::Empty(m))
+        {
+            space.iter_mut().for_each(|line| {
+                line[x] = Space::Empty(m);
+            });
         }
+        x += 1;
+    }
     space
 }
 
@@ -97,7 +94,10 @@ fn dist(x: usize, y: usize, x2: usize, y2: usize) -> usize {
 
 #[test]
 fn test_11_2a() {
-    assert_eq!(1030, solve("...#......
+    assert_eq!(
+        1030,
+        solve(
+            "...#......
 .......#..
 #.........
 ..........
@@ -106,12 +106,19 @@ fn test_11_2a() {
 .........#
 ..........
 .......#..
-#...#.....".to_string(), 10));
+#...#....."
+                .to_string(),
+            10
+        )
+    );
 }
 
 #[test]
 fn test_11_2b() {
-    assert_eq!(8410, solve("...#......
+    assert_eq!(
+        8410,
+        solve(
+            "...#......
 .......#..
 #.........
 ..........
@@ -120,5 +127,9 @@ fn test_11_2b() {
 .........#
 ..........
 .......#..
-#...#.....".to_string(), 100));
+#...#....."
+                .to_string(),
+            100
+        )
+    );
 }

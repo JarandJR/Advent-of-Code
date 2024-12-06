@@ -2,10 +2,13 @@
 
 use std::f32::INFINITY;
 
-use aoc2023::{read_file_string, parse_line, Parse, get_numbers_on_line};
+use aoc2023::{get_numbers_on_line, parse_line, read_file_string, Parse};
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/05.txt").unwrap(), false));
+    println!(
+        "Result {}",
+        solve(read_file_string("inputs/05.txt").unwrap(), false)
+    );
 }
 
 fn solve(data: String, first: bool) -> i64 {
@@ -75,7 +78,7 @@ impl Parse for Almanac {
         maps.push(Vec::new());
         while let Some(l) = it.next() {
             let line_numbers = get_numbers_on_line(l);
-            if line_numbers.is_empty() && !maps[i].is_empty(){
+            if line_numbers.is_empty() && !maps[i].is_empty() {
                 i += 1;
                 maps.push(Vec::new());
                 continue;

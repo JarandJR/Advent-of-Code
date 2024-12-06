@@ -1,13 +1,17 @@
 use aoc2023::read_file_string;
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/02.txt").unwrap()));
+    println!(
+        "Result {}",
+        solve(read_file_string("inputs/02.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> i32 {
-    data.lines().into_iter()
-    .map(|l| operation(&l))
-    .fold(0, |a, b| a + b)
+    data.lines()
+        .into_iter()
+        .map(|l| operation(&l))
+        .fold(0, |a, b| a + b)
 }
 
 fn operation(i: &str) -> i32 {
@@ -24,14 +28,14 @@ fn operation(i: &str) -> i32 {
             num = get_data(data[counter]);
         }
         let num: i32 = num.parse().unwrap();
-        let color = get_color(&get_data(data[counter+1])).unwrap();
+        let color = get_color(&get_data(data[counter + 1])).unwrap();
 
         match color {
             Color::Blue => blue = get_color_count(blue, num),
             Color::Red => red = get_color_count(red, num),
             Color::Green => green = get_color_count(green, num),
         }
-        counter+=2;
+        counter += 2;
         if counter >= data.len() {
             break;
         }
@@ -55,7 +59,7 @@ fn get_color(c: &str) -> Option<Color> {
         "blue" => Some(Color::Blue),
         "red" => Some(Color::Red),
         "green" => Some(Color::Green),
-        _ => None
+        _ => None,
     }
 }
 
@@ -67,10 +71,12 @@ enum Color {
 
 #[test]
 fn test_02_1() {
-    let input = String::from("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+    let input = String::from(
+        "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
     Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
     Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
     Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
-    Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green");
+    Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
+    );
     assert_eq!(2286, solve(input));
 }

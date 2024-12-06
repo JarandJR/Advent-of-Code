@@ -22,7 +22,7 @@ fn solve(nums: Vec<usize>, right_set: HashMap<usize, usize>) -> usize {
 fn parse(day: &str) -> (Vec<usize>, HashMap<usize, usize>) {
     let mut nums = Vec::new();
     let mut rigth_set = HashMap::new();
-    if let Ok(file) = File::open(format!("inputs/{}.txt", day)) {
+    if let Ok(file) = File::open(format!("2024/inputs/{}.txt", day)) {
         let mut reader = BufReader::new(file);
         let mut buffer = String::new();
         while {

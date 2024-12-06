@@ -3,7 +3,10 @@ use std::collections::HashMap;
 use aoc2023::{read_file_string, LinkedList};
 
 fn main() {
-    println!("Result: {}", solve(read_file_string("inputs/08.txt").unwrap()));
+    println!(
+        "Result: {}",
+        solve(read_file_string("inputs/08.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> usize {
@@ -61,20 +64,23 @@ fn parse_path(line: &str) -> (String, Path) {
     let mut it = line.trim().split(" ").into_iter();
     let key = it.next().unwrap().to_string();
     it.next();
-    let left = it.next().unwrap().to_string()
-    .replace("(", "").replace(",", "")
-    .to_string();
-    let right = it.next().unwrap().to_string()
-    .replace(")", "").to_string();
-    (key, Path {
-            left,
-            right,
-        })
+    let left = it
+        .next()
+        .unwrap()
+        .to_string()
+        .replace("(", "")
+        .replace(",", "")
+        .to_string();
+    let right = it.next().unwrap().to_string().replace(")", "").to_string();
+    (key, Path { left, right })
 }
 
 #[test]
 fn test_08_1a() {
-    assert_eq!(2, solve("RL
+    assert_eq!(
+        2,
+        solve(
+            "RL
 
 AAA = (BBB, CCC)
 BBB = (DDD, EEE)
@@ -82,14 +88,23 @@ CCC = (ZZZ, GGG)
 DDD = (DDD, DDD)
 EEE = (EEE, EEE)
 GGG = (GGG, GGG)
-ZZZ = (ZZZ, ZZZ)".to_string()));
+ZZZ = (ZZZ, ZZZ)"
+                .to_string()
+        )
+    );
 }
 
 #[test]
 fn test_08_1b() {
-    assert_eq!(6, solve("LLR
+    assert_eq!(
+        6,
+        solve(
+            "LLR
 
 AAA = (BBB, BBB)
 BBB = (AAA, ZZZ)
-ZZZ = (ZZZ, ZZZ)".to_string()));
+ZZZ = (ZZZ, ZZZ)"
+                .to_string()
+        )
+    );
 }

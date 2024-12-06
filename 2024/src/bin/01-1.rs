@@ -25,7 +25,8 @@ fn solve(
 fn parse(day: &str) -> (BinaryHeap<Reverse<i32>>, BinaryHeap<Reverse<i32>>) {
     let mut left_heap = BinaryHeap::new();
     let mut rigth_heap = BinaryHeap::new();
-    if let Ok(file) = File::open(format!("inputs/{}.txt", day)) {
+    if let Ok(file) = File::open(format!("2024/inputs/{}.txt", day)) {
+        println!("okey");
         let mut reader = BufReader::new(file);
         let mut buffer = String::new();
         while {

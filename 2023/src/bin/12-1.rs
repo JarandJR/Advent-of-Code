@@ -6,12 +6,11 @@ fn main() {
 }
 
 fn solve(data: String) -> usize {
-    data
-    .lines()
-    .map(|line| get_arrangements(line))
-    .collect::<Vec<usize>>()
-    .iter()
-    .fold(0, |acc, f| acc + f)
+    data.lines()
+        .map(|line| get_arrangements(line))
+        .collect::<Vec<usize>>()
+        .iter()
+        .fold(0, |acc, f| acc + f)
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -34,21 +33,27 @@ impl From<char> for Records {
 
 fn get_arrangements(line: &str) -> usize {
     let (records, parts) = line.split_once(' ').unwrap();
-    let mut records = records.chars().map(|c| Records::from(c)).collect::<Vec<Records>>();
-    let parts = parts.split(',').map(|s| s.parse::<usize>().unwrap()).collect::<Vec<usize>>();
+    let mut records = records
+        .chars()
+        .map(|c| Records::from(c))
+        .collect::<Vec<Records>>();
+    let parts = parts
+        .split(',')
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
 
     generate_combinations(&mut records)
         .iter()
         .filter(|a| is_valid(a, &parts))
-    .count()
+        .count()
 }
 
 fn generate_combinations(r: &Vec<Records>) -> Vec<Vec<Records>> {
     let mut combs = Vec::new();
-    
+
     let mut stack = Vec::new();
     stack.push((0, Vec::new()));
-    while let Some((at, mut cur)) = stack.pop() {        
+    while let Some((at, mut cur)) = stack.pop() {
         for i in at..r.len() {
             match r[i] {
                 Records::Damaged => cur.push(Records::Damaged),
@@ -58,7 +63,7 @@ fn generate_combinations(r: &Vec<Records>) -> Vec<Vec<Records>> {
                     cur.push(Records::Operational);
                     next.push(Records::Damaged);
                     stack.push((i + 1, next));
-                },
+                }
             }
         }
         if cur.len() == r.len() {
@@ -74,15 +79,13 @@ fn is_valid(arr: &Vec<Records>, parts: &Vec<usize>) -> bool {
         .split(|a| a == &Records::Operational)
         .filter(|a| a.len() > 0)
         .collect::<Vec<&[Records]>>();
-    
+
     if blocks.len() != parts.len() {
         return false;
     }
 
     let mut i = 0;
-    blocks
-    .iter()
-    .all(|a| {
+    blocks.iter().all(|a| {
         let len = a.len();
         let part = parts[i];
         i += 1;
@@ -107,10 +110,16 @@ test_arrangements!(test_12_1a_6, "?###???????? 3,2,1", 10);
 
 #[test]
 fn test_12_1b() {
-    assert_eq!(21, solve("???.### 1,1,3
+    assert_eq!(
+        21,
+        solve(
+            "???.### 1,1,3
 .??..??...?##. 1,1,3
 ?#?#?#?#?#?#?#? 1,3,1,6
 ????.#...#... 4,1,1
 ????.######..#####. 1,6,5
-?###???????? 3,2,1".to_string()));
+?###???????? 3,2,1"
+                .to_string()
+        )
+    );
 }

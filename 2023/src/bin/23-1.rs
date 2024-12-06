@@ -9,7 +9,11 @@ fn solve(data: String) -> usize {
     let (map, start, end) = parse(&data);
     let mut max = 0;
     let mut paths = Vec::new();
-    paths.push(Path { tiles: std::collections::HashSet::new(), length: 0, at: start });
+    paths.push(Path {
+        tiles: std::collections::HashSet::new(),
+        length: 0,
+        at: start,
+    });
 
     while let Some(mut path) = paths.pop() {
         path.tiles.insert(path.at);
@@ -34,7 +38,10 @@ fn solve(data: String) -> usize {
             prev = Some(path.at);
             path.at = next.unwrap();
             while let Terrain::Slope(slope) = map[path.at.1][path.at.0] {
-                let next = ((path.at.0 as isize + slope.0) as usize, (path.at.1 as isize + slope.1) as usize);
+                let next = (
+                    (path.at.0 as isize + slope.0) as usize,
+                    (path.at.1 as isize + slope.1) as usize,
+                );
                 if path.tiles.contains(&next) {
                     break;
                 }
@@ -47,11 +54,18 @@ fn solve(data: String) -> usize {
             }
 
             for n in neighbors {
-                let mut neighbor = Path { tiles: path.tiles.clone(), length: path.length + 1, at: n };
+                let mut neighbor = Path {
+                    tiles: path.tiles.clone(),
+                    length: path.length + 1,
+                    at: n,
+                };
                 neighbor.tiles.insert(neighbor.at);
                 let mut invalid_slope = false;
                 while let Terrain::Slope(slope) = map[neighbor.at.1][neighbor.at.0] {
-                    let next = ((neighbor.at.0 as isize + slope.0) as usize, (neighbor.at.1 as isize + slope.1) as usize);
+                    let next = (
+                        (neighbor.at.0 as isize + slope.0) as usize,
+                        (neighbor.at.1 as isize + slope.1) as usize,
+                    );
                     if neighbor.tiles.contains(&next) {
                         invalid_slope = true;
                         break;
@@ -77,7 +91,11 @@ fn solve(data: String) -> usize {
     max
 }
 
-fn get_neighbors(map: &Vec<Vec<Terrain>>, at: &(usize, usize), prev: Option<(usize, usize)>) -> Vec<(usize, usize)> {
+fn get_neighbors(
+    map: &Vec<Vec<Terrain>>,
+    at: &(usize, usize),
+    prev: Option<(usize, usize)>,
+) -> Vec<(usize, usize)> {
     let mut neighbors = Vec::new();
     let (x, y) = at;
     for dir in [(-1, 0), (0, -1), (1, 0), (0, 1)].iter() {
@@ -125,7 +143,6 @@ impl From<char> for Terrain {
             _ => Terrain::Slope(from_slope(&c)),
         }
     }
-    
 }
 
 fn from_slope(s: &char) -> (isize, isize) {
@@ -134,7 +151,7 @@ fn from_slope(s: &char) -> (isize, isize) {
         'v' => (0, 1),
         '<' => (-1, 0),
         '>' => (1, 0),
-        _ => panic!("Invalid slope"),        
+        _ => panic!("Invalid slope"),
     }
 }
 
@@ -161,7 +178,10 @@ fn parse(data: &str) -> (Vec<Vec<Terrain>>, (usize, usize), (usize, usize)) {
 
 #[test]
 fn test_23_1() {
-    assert_eq!(94, solve("#.#####################
+    assert_eq!(
+        94,
+        solve(
+            "#.#####################
 #.......#########...###
 #######.#########.#.###
 ###.....#.>.>.###.#.###
@@ -183,5 +203,8 @@ fn test_23_1() {
 #...#...#.#.>.>.#.>.###
 #.###.###.#.###.#.#v###
 #.....###...###...#...#
-#####################.#".to_string()));
+#####################.#"
+                .to_string()
+        )
+    );
 }

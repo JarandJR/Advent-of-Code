@@ -20,7 +20,7 @@ fn solve(data: String) -> usize {
 
     let mut sum = 0;
     for g in 0..galaxies {
-        for g2 in g+1..galaxies {
+        for g2 in g + 1..galaxies {
             let (x, y) = map[&g];
             let (x2, y2) = map[&g2];
             sum += dist(x, y, x2, y2);
@@ -32,32 +32,26 @@ fn solve(data: String) -> usize {
 fn parse(data: String) -> Vec<Vec<char>> {
     let mut space = data
         .lines()
-        .map(|line| line
-            .chars()
-            .collect::<Vec<_>>())
+        .map(|line| line.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
     let mut y = 0;
     while y < space.len() {
-            if space[y].iter().all(|c| *c == '.') {
-                space
-                .insert(y, vec!['.'; space[y].len()]);
-                y += 1;
-            }
+        if space[y].iter().all(|c| *c == '.') {
+            space.insert(y, vec!['.'; space[y].len()]);
             y += 1;
         }
-    
+        y += 1;
+    }
+
     let mut x = 0;
     while x < space[0].len() {
-            if space.iter().all(|line| line[x] == '.') {
-                space
-                .iter_mut()
-                .for_each(|line| line
-                    .insert(x, '.'));
-                x += 1;
-            }
+        if space.iter().all(|line| line[x] == '.') {
+            space.iter_mut().for_each(|line| line.insert(x, '.'));
             x += 1;
         }
+        x += 1;
+    }
     space
 }
 
@@ -67,7 +61,10 @@ fn dist(x: usize, y: usize, x2: usize, y2: usize) -> usize {
 
 #[test]
 fn test_11_1() {
-    assert_eq!(374, solve("...#......
+    assert_eq!(
+        374,
+        solve(
+            "...#......
 .......#..
 #.........
 ..........
@@ -76,5 +73,8 @@ fn test_11_1() {
 .........#
 ..........
 .......#..
-#...#.....".to_string()));
+#...#....."
+                .to_string()
+        )
+    );
 }

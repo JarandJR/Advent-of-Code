@@ -1,12 +1,17 @@
 use aoc2023::read_file_string;
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/01.txt").unwrap()));
+    println!(
+        "Result {}",
+        solve(read_file_string("inputs/01.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> i32 {
-    data.lines().into_iter().map(|l| operation(l))
-    .fold(0, |a, b| a + b)
+    data.lines()
+        .into_iter()
+        .map(|l| operation(l))
+        .fold(0, |a, b| a + b)
 }
 
 fn operation(i: &str) -> i32 {
@@ -21,9 +26,11 @@ fn concat_chars_to_num(a: &char, b: &char) -> i32 {
 
 #[test]
 fn test_01_1() {
-    let input = String::from("1abc2
+    let input = String::from(
+        "1abc2
     pqr3stu8vwx
     a1b2c3d4e5f
-    treb7uchet");
+    treb7uchet",
+    );
     assert_eq!(142, solve(input));
 }

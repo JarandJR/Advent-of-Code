@@ -1,11 +1,14 @@
 use aoc2023::read_file_string;
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/03.txt").unwrap()));
+    println!(
+        "Result {}",
+        solve(read_file_string("inputs/03.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> i32 {
-    let mut it= data.lines().into_iter();
+    let mut it = data.lines().into_iter();
     let mut prev = it.next();
     let mut at = it.next();
     let mut next = it.next();
@@ -24,17 +27,23 @@ fn check_line(p: Option<&str>, at: &str, n: Option<&str>) -> i32 {
     let mut sum = 0;
     for (i, c) in at.chars().enumerate() {
         if c == '*' {
-            if  let Some(pair) = is_part(p, at, n, i-1, i + 1) {
-                sum += pair[0] * pair[1];                    
-            } 
+            if let Some(pair) = is_part(p, at, n, i - 1, i + 1) {
+                sum += pair[0] * pair[1];
+            }
         }
     }
     sum
 }
 
-fn is_part(p: Option<&str>, a: &str, n: Option<&str>, start: usize, end: usize) -> Option<Vec<i32>> {
+fn is_part(
+    p: Option<&str>,
+    a: &str,
+    n: Option<&str>,
+    start: usize,
+    end: usize,
+) -> Option<Vec<i32>> {
     let mut pair: Vec<i32> = Vec::with_capacity(2);
- 
+
     for i in start..=end {
         if p.is_some() {
             if p.unwrap().chars().into_iter().nth(i).unwrap().is_numeric() {
@@ -54,9 +63,9 @@ fn is_part(p: Option<&str>, a: &str, n: Option<&str>, start: usize, end: usize) 
         }
         if a.chars().into_iter().nth(i).unwrap().is_numeric() {
             let num = get_number(&a, i);
-                if !pair.contains(&num) {
-                    pair.push(num);
-                }
+            if !pair.contains(&num) {
+                pair.push(num);
+            }
         }
     }
     if pair.len() < 2 {
@@ -75,7 +84,7 @@ fn get_number(l: &str, i: usize) -> i32 {
         }
         i -= 1;
         at = l.chars().into_iter().nth(i).unwrap();
-    } 
+    }
 
     let mut res = String::new();
     while at.is_numeric() {
@@ -91,7 +100,8 @@ fn get_number(l: &str, i: usize) -> i32 {
 
 #[test]
 fn test_03_2() {
-    let input = String::from("467..114..
+    let input = String::from(
+        "467..114..
 ...*......
 ..35..633.
 ......#...
@@ -100,6 +110,7 @@ fn test_03_2() {
 ..592.....
 ......755.
 ...$.*....
-.664.598..");
+.664.598..",
+    );
     assert_eq!(467835, solve(input));
 }

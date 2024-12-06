@@ -1,11 +1,14 @@
 use aoc2023::read_file_string;
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/03.txt").unwrap()));
+    println!(
+        "Result {}",
+        solve(read_file_string("inputs/03.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> i32 {
-    let mut it= data.lines().into_iter();
+    let mut it = data.lines().into_iter();
     let mut prev = it.next();
     let mut at = it.next();
     let mut next = it.next();
@@ -31,8 +34,7 @@ fn check_line(p: Option<&str>, at: &str, n: Option<&str>) -> i32 {
                     sum += get_number(&num);
                 }
             }
-        }
-        else {
+        } else {
             if num.is_empty() {
                 continue;
             }
@@ -45,7 +47,13 @@ fn check_line(p: Option<&str>, at: &str, n: Option<&str>) -> i32 {
     sum
 }
 
-fn check_num_is_part(p: Option<&str>, a: core::str::Chars, n: Option<&str>, len: usize, end: usize) -> bool {
+fn check_num_is_part(
+    p: Option<&str>,
+    a: core::str::Chars,
+    n: Option<&str>,
+    len: usize,
+    end: usize,
+) -> bool {
     let mut is_part = false;
     let mut start = end - len;
     if start != 0 {
@@ -87,7 +95,8 @@ fn get_number(chars: &Vec<char>) -> i32 {
 
 #[test]
 fn test_03_1() {
-    let input = String::from("467..114..
+    let input = String::from(
+        "467..114..
 ...*......
 ..35..633.
 ......#...
@@ -96,6 +105,7 @@ fn test_03_1() {
 ..592.....
 ......755.
 ...$.*....
-.664.598..");
+.664.598..",
+    );
     assert_eq!(4361, solve(input));
 }

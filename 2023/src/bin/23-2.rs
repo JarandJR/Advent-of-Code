@@ -1,6 +1,6 @@
-use num_cpus;
-use std::sync::{Arc, Mutex, Condvar};
 use aoc2023::read_file_string;
+use num_cpus;
+use std::sync::{Arc, Condvar, Mutex};
 
 fn main() {
     let data = read_file_string("inputs/23.txt").unwrap();
@@ -18,86 +18,88 @@ fn solve(data: String) -> usize {
     }]));
     let mut threads = Vec::new();
     let cond = Arc::new((Mutex::new(false), Condvar::new()));
-    
+
     let num_cores = num_cpus::get();
     println!("Using {} cores", num_cores);
-    let finished_threads = Arc::new(Mutex::new(vec![false;num_cores]));
+    let finished_threads = Arc::new(Mutex::new(vec![false; num_cores]));
     for i in 0..num_cores {
         let cond_clone = Arc::clone(&cond);
         let max_clone = Arc::clone(&max);
         let paths_clone = Arc::clone(&paths);
         let map_clone = Arc::clone(&map);
         let f_threads = Arc::clone(&finished_threads);
-        threads.push(std::thread::spawn(move || {
+        threads.push(std::thread::spawn(move || loop {
+            {
+                let value = paths_clone.lock().unwrap().is_empty();
+                mutate_cond_var(&cond_clone, value);
+            }
+            let (lock, c) = &*cond_clone;
+            {
+                let mut wait = lock.lock().unwrap();
+                if *wait {
+                    println!("Thread {} waiting", i);
+                }
+                while *wait {
+                    f_threads.lock().unwrap()[i] = true;
+                    if f_threads.lock().unwrap().iter().all(|x| *x) {
+                        println!("Thread {} finished waiting", i);
+                        break;
+                    }
+                    wait = c.wait(wait).unwrap();
+                    if !*wait {
+                        println!("Thread {} awake", i);
+                    }
+                }
+            }
+            {
+                if f_threads.lock().unwrap().iter().all(|x| *x) {
+                    println!("Thread {} exiting", i);
+                    mutate_cond_var(&cond_clone, false);
+                    break;
+                }
+            }
+            let path = paths_clone.lock().unwrap().pop();
+            if path.is_none() {
+                println!("Thread {} no path", i);
+                continue;
+            }
+            {
+                f_threads.lock().unwrap()[i] = false;
+            }
+
+            let mut path = path.unwrap();
+            path.tiles.insert(path.at);
             loop {
-                {
+                let mut neighbors = get_neighbors(&map_clone, &path.at, &path.tiles);
+                let next = neighbors.pop();
+                if next.is_none() {
+                    break;
+                }
+
+                path.length += 1;
+                path.at = next.unwrap();
+                for n in &neighbors {
+                    let mut neighbor = Path {
+                        tiles: path.tiles.clone(),
+                        length: path.length,
+                        at: *n,
+                    };
+                    neighbor.tiles.insert(neighbor.at);
+                    paths_clone.lock().unwrap().push(neighbor);
+                }
+                if !neighbors.is_empty() {
                     let value = paths_clone.lock().unwrap().is_empty();
                     mutate_cond_var(&cond_clone, value);
                 }
-                let (lock, c) = &*cond_clone;
-                {
-                    let mut wait = lock.lock().unwrap();
-                    if *wait {
-                        println!("Thread {} waiting", i);
-                    }
-                    while *wait {
-                        f_threads.lock().unwrap()[i] = true;
-                        if f_threads.lock().unwrap().iter().all(|x| *x) {
-                            println!("Thread {} finished waiting", i);
-                            break;
-                        }
-                        wait = c.wait(wait).unwrap();
-                        if !*wait {
-                            println!("Thread {} awake", i);
-                        }
-                    }
-                }
-                {
-                    if f_threads.lock().unwrap().iter().all(|x| *x) {
-                        println!("Thread {} exiting", i);
-                        mutate_cond_var(&cond_clone, false);
-                        break;
-                    }
-                }
-                let path = paths_clone.lock().unwrap().pop();
-                if path.is_none() {
-                    println!("Thread {} no path", i);
-                    continue;
-                }
-                {
-                    f_threads.lock().unwrap()[i] = false;
-                }
-                
-                let mut path = path.unwrap();
+
                 path.tiles.insert(path.at);
-                loop {
-                    let mut neighbors = get_neighbors(&map_clone, &path.at, &path.tiles);
-                    let next = neighbors.pop();
-                    if next.is_none() {
-                        break;
+                if path.at == end {
+                    let mut m = max_clone.lock().unwrap();
+                    if path.length > *m {
+                        println!("New max: {}", path.length);
+                        *m = path.length;
                     }
-    
-                    path.length += 1;
-                    path.at = next.unwrap();
-                    for n in &neighbors {
-                        let mut neighbor = Path { tiles: path.tiles.clone(), length: path.length, at: *n };
-                        neighbor.tiles.insert(neighbor.at);
-                        paths_clone.lock().unwrap().push(neighbor);
-                    }
-                    if !neighbors.is_empty() {
-                        let value = paths_clone.lock().unwrap().is_empty();
-                        mutate_cond_var(&cond_clone, value);
-                    }
-    
-                    path.tiles.insert(path.at);
-                    if path.at == end {
-                        let mut m = max_clone.lock().unwrap();
-                        if path.length > *m {
-                            println!("New max: {}", path.length);
-                            *m = path.length;
-                        }
-                        break;
-                    }
+                    break;
                 }
             }
         }));
@@ -113,9 +115,13 @@ fn mutate_cond_var(cond_clone: &Arc<(Mutex<bool>, Condvar)>, value: bool) {
     let (lock, c) = &**cond_clone;
     *lock.lock().unwrap() = value;
     c.notify_all();
- }
+}
 
-fn get_neighbors(map: &Vec<Vec<Terrain>>, at: &(usize, usize), prevs: &std::collections::HashSet<(usize, usize)>) -> Vec<(usize, usize)> {
+fn get_neighbors(
+    map: &Vec<Vec<Terrain>>,
+    at: &(usize, usize),
+    prevs: &std::collections::HashSet<(usize, usize)>,
+) -> Vec<(usize, usize)> {
     let mut neighbors = Vec::new();
     let (x, y) = at;
     for dir in [(1, 0), (0, 1), (-1, 0), (0, -1)].iter() {
@@ -159,7 +165,6 @@ impl From<char> for Terrain {
             _ => Terrain::Path,
         }
     }
-    
 }
 
 fn parse(data: &str) -> (Vec<Vec<Terrain>>, (usize, usize), (usize, usize)) {
@@ -185,7 +190,10 @@ fn parse(data: &str) -> (Vec<Vec<Terrain>>, (usize, usize), (usize, usize)) {
 
 #[test]
 fn test_23_2() {
-    assert_eq!(154, solve("#.#####################
+    assert_eq!(
+        154,
+        solve(
+            "#.#####################
 #.......#########...###
 #######.#########.#.###
 ###.....#.>.>.###.#.###
@@ -207,5 +215,8 @@ fn test_23_2() {
 #...#...#.#.>.>.#.>.###
 #.###.###.#.###.#.#v###
 #.....###...###...#...#
-#####################.#".to_string()));
+#####################.#"
+                .to_string()
+        )
+    );
 }

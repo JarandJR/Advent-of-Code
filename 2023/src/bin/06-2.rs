@@ -1,7 +1,10 @@
-use aoc2023::{read_file_string, parse_line, Parse, get_numbers_on_line};
+use aoc2023::{get_numbers_on_line, parse_line, read_file_string, Parse};
 
 fn main() {
-    println!("Result {}", solve(read_file_string("inputs/06.txt").unwrap()));
+    println!(
+        "Result {}",
+        solve(read_file_string("inputs/06.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> i64 {
@@ -9,7 +12,7 @@ fn solve(data: String) -> i64 {
     let mut wins = 0;
     for time_held in 1..game.time {
         let time_left = game.time - time_held;
-        if time_held * time_left > game.record{
+        if time_held * time_left > game.record {
             wins += 1;
         }
     }
@@ -26,7 +29,10 @@ impl Parse for Game {
         let mut it = line.lines().into_iter();
         let times_list = get_numbers_on_line(it.next().unwrap());
         let records_list = get_numbers_on_line(it.next().unwrap());
-        Self { time: concat(times_list), record: concat(records_list) }
+        Self {
+            time: concat(times_list),
+            record: concat(records_list),
+        }
     }
 }
 
@@ -40,6 +46,12 @@ fn concat(list: Vec<i64>) -> i64 {
 
 #[test]
 fn test_06_2() {
-    assert_eq!(71503, solve("Time:      7  15   30
-    Distance:  9  40  200".to_string()));
+    assert_eq!(
+        71503,
+        solve(
+            "Time:      7  15   30
+    Distance:  9  40  200"
+                .to_string()
+        )
+    );
 }

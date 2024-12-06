@@ -1,21 +1,25 @@
-use aoc2023::{read_file_string, get_data_list, Parse, get_numbers_on_line};
+use aoc2023::{get_data_list, get_numbers_on_line, read_file_string, Parse};
 
 fn main() {
-    println!("Result: {}", solve(read_file_string("inputs/07.txt").unwrap()));
+    println!(
+        "Result: {}",
+        solve(read_file_string("inputs/07.txt").unwrap())
+    );
 }
 
 fn solve(data: String) -> usize {
     let mut hands: Vec<PokerHand> = get_data_list(data);
-    hands.sort_by(|a, b| {
-        match a.poker_type.partial_cmp(&b.poker_type).unwrap() {
+    hands.sort_by(
+        |a, b| match a.poker_type.partial_cmp(&b.poker_type).unwrap() {
             std::cmp::Ordering::Equal => highest_first_cards(&a.cards, &b.cards),
-            a => a,            
-        }
-    });
-    hands.iter()
-    .enumerate()
-    .map(|(i, h)| h.bid * (i + 1))
-    .fold(0, |a, b| a + b)
+            a => a,
+        },
+    );
+    hands
+        .iter()
+        .enumerate()
+        .map(|(i, h)| h.bid * (i + 1))
+        .fold(0, |a, b| a + b)
 }
 
 fn highest_first_cards(a: &Vec<i32>, b: &Vec<i32>) -> std::cmp::Ordering {
@@ -52,24 +56,27 @@ impl Parse for PokerHand {
         let mut l = String::new();
         for c in it.next().unwrap().chars() {
             if c.is_numeric() {
-                l.push_str(&format!("{},",c));
+                l.push_str(&format!("{},", c));
             } else {
-                l.push_str(&format!("{},",get_card_number_string(c)));
+                l.push_str(&format!("{},", get_card_number_string(c)));
             }
         }
         l.push_str(it.next().unwrap());
         let numbers = get_numbers_on_line(l.as_str());
-        let cards = numbers[..numbers.len()-1].to_vec();
+        let cards = numbers[..numbers.len() - 1].to_vec();
         let bid = *numbers.last().unwrap() as usize;
         let poker_type = get_poker_type(&cards);
-        PokerHand { cards, bid, poker_type: poker_type }
+        PokerHand {
+            cards,
+            bid,
+            poker_type: poker_type,
+        }
     }
 }
 
 fn get_poker_type(cards: &Vec<i32>) -> PokerType {
     let counts = number_of_a_kind(cards);
-    let highest_count = *counts.last().unwrap()
-    + cards.iter().filter(|&x| x == &1).count() as i32;
+    let highest_count = *counts.last().unwrap() + cards.iter().filter(|&x| x == &1).count() as i32;
     match highest_count {
         5 => PokerType::FiveOfAKind,
         4 => PokerType::FourOfAKind,
@@ -80,27 +87,27 @@ fn get_poker_type(cards: &Vec<i32>) -> PokerType {
                 1 => PokerType::FullHouse,
                 _ => PokerType::ThreeOfAKind,
             }
-        },
-        2 => {
-            match counts.iter().filter(|&x| *x == 1).count() {
-                1 => PokerType::TwoPairs,
-                _ => PokerType::OnePair,
-            }
+        }
+        2 => match counts.iter().filter(|&x| *x == 1).count() {
+            1 => PokerType::TwoPairs,
+            _ => PokerType::OnePair,
         },
         _ => PokerType::HighCard,
-        
     }
 }
 
 fn number_of_a_kind(cards: &Vec<i32>) -> Vec<i32> {
     let mut counts = Vec::new();
     for c in cards {
-        let count = cards.iter().filter(|&x| {
-            if x == c && x != &1{
-                return true;
-            }
-            false
-        }).count() as i32;
+        let count = cards
+            .iter()
+            .filter(|&x| {
+                if x == c && x != &1 {
+                    return true;
+                }
+                false
+            })
+            .count() as i32;
         counts.push(count);
     }
     counts.sort();
@@ -120,9 +127,15 @@ fn get_card_number_string(c: char) -> String {
 
 #[test]
 fn test_07_2() {
-    assert_eq!(5905, solve("32T3K 765
+    assert_eq!(
+        5905,
+        solve(
+            "32T3K 765
 T55J5 684
 KK677 28
 KTJJT 220
-QQQJA 483".to_string()));
+QQQJA 483"
+                .to_string()
+        )
+    );
 }

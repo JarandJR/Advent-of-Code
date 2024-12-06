@@ -5,16 +5,14 @@ pub fn read_file_string(path: &str) -> Result<String, Box<dyn std::error::Error>
 
 pub trait Parse {
     fn parse(line: &str) -> Self;
-    }
+}
 
 pub fn parse_line<T: Parse>(line: &str) -> T {
     T::parse(line)
 }
 
 pub fn get_data_list<T: Parse>(data: String) -> Vec<T> {
-    data.lines().into_iter()
-    .map(|l| parse_line(l))
-    .collect()
+    data.lines().into_iter().map(|l| parse_line(l)).collect()
 }
 
 pub fn get_first_number_on_line(l: &str) -> i32 {
@@ -36,11 +34,11 @@ pub fn get_first_number_on_line(l: &str) -> i32 {
     res.parse().unwrap()
 }
 
-pub fn get_numbers_on_line<T>(l: &str) -> Vec<T> 
-    where
+pub fn get_numbers_on_line<T>(l: &str) -> Vec<T>
+where
     T: std::str::FromStr,
     <T as std::str::FromStr>::Err: std::fmt::Debug,
-    {
+{
     let mut res = Vec::new();
     let mut it = l.chars().into_iter();
     let mut prev = ' ';
@@ -52,7 +50,7 @@ pub fn get_numbers_on_line<T>(l: &str) -> Vec<T>
                 num.push('-');
             }
             loop {
-                if c.is_none() || !c.unwrap().is_numeric(){
+                if c.is_none() || !c.unwrap().is_numeric() {
                     break;
                 }
                 num.push(c.unwrap());
@@ -74,7 +72,7 @@ pub struct LinkedList<T> {
     pub head: Option<Box<Node<T>>>,
 }
 
-impl <T> LinkedList<T> {
+impl<T> LinkedList<T> {
     pub fn new() -> Self {
         LinkedList { head: None }
     }
