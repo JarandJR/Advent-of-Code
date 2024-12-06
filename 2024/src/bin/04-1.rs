@@ -36,6 +36,7 @@ fn parse_and_solve(day: &str) -> usize {
                         if !valid {
                             return acc;
                         }
+                        // columns + 1 for \n
                         let step = (dir_row * (columns as i32 + 1) + dir_colmn).abs();
                         let mut start = at;
                         let mut xmas = vec!['X', 'M', 'A', 'S'];

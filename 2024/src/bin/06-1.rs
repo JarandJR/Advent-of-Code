@@ -1,4 +1,6 @@
-use aoc2024::{parse_into_lines, Vec2};
+use std::collections::HashSet;
+
+use aoc2024::{parse_into_lines, Grid, Vec2};
 use itertools::Itertools;
 
 fn main() {
@@ -7,23 +9,43 @@ fn main() {
 
 fn parse_and_solve(day: &str) -> usize {
     if let Some(mut line_iter) = parse_into_lines(day) {
-        let grid = line_iter.join("\n");
-        let start = Vec2::from(grid.lines().enumerate().fold((0,0), |start: (usize, usize), (y, line)| {
-            let potential_start = line.chars().enumerate().fold((0, 0), |start, (x, c)| {
-                print!("{}", c);
-                match c == '^' {
-                    true => (x, y),
-                    _ => start
+        let input = line_iter.join("\n");
+        let mut at = Vec2::from(input.lines().enumerate().fold(
+            (0, 0),
+            |start: (usize, usize), (y, line)| {
+                let potential_start =
+                    line.chars()
+                        .enumerate()
+                        .fold((0, 0), |start, (x, c)| match c == '^' {
+                            true => (x, y),
+                            _ => start,
+                        });
+                if potential_start != (0, 0) {
+                    return potential_start;
                 }
-            });
-            println!();
-            if potential_start != (0, 0) {
-                return potential_start;
+                start
+            },
+        ));
+        let grid = Grid::from(input.lines());
+        let mut direction_iter = Vec2::FOUR_CONNECTEDNESS.iter().cycle();
+        let mut curnt_dir = direction_iter.next().unwrap();
+        let mut memory = HashSet::new();
+        while at.x < grid.columns as i32 - 1 && 0 < at.x && 0 < at.y && at.y < grid.rows as i32 - 1
+        {
+            let mut movement_iter = grid.slice_end_iter(&at, curnt_dir);
+            let _ = movement_iter.next();
+            for mov in movement_iter {
+                if mov == '#' {
+                    curnt_dir = direction_iter.next().unwrap();
+                    break;
+                }
+                at += *curnt_dir;
+                if !memory.contains(&at) {
+                    memory.insert(at);
+                }
             }
-            start
-        }));
-        println!("start: {:?}", start);
-        return 1;
+        }
+        return memory.len();
     }
     0
 }
