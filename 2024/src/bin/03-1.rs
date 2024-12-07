@@ -1,7 +1,7 @@
 use aoc2024::parse_into_byte_lines;
 
 fn main() {
-    dbg!(parse_and_solve("03"));
+    dbg!(parse_and_solve(2024, "03"));
 }
 
 fn count_status_bits(status: &u128) -> usize {
@@ -17,8 +17,8 @@ fn count_status_bits(status: &u128) -> usize {
     count
 }
 
-fn parse_and_solve(day: &str) -> usize {
-    if let Some(line_iter) = parse_into_byte_lines(day) {
+fn parse_and_solve(year: i32, day: &str) -> usize {
+    if let Some(line_iter) = parse_into_byte_lines(year, day) {
         let expected_byte_order = [b'm', b'u', b'l', b'(', b',', b')'];
         return line_iter.fold(0, |acc, line| {
             acc + (line.iter().fold(0_u128, |acc, b| {
@@ -102,7 +102,7 @@ fn day03_1() {
         )
         .expect("Could not write to file");
     }
-    let result = parse_and_solve(&file_name);
+    let result = parse_and_solve(2024, file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(result, 161);

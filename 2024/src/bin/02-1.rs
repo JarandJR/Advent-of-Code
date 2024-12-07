@@ -8,11 +8,11 @@ use itertools::Itertools;
 const NEW_LINE: u8 = b'\n';
 
 fn main() {
-    dbg!(parse_and_solve("02"));
+    dbg!(parse_and_solve("2024", "02"));
 }
 
-fn parse_and_solve(day: &str) -> usize {
-    if let Ok(file) = File::open(format!("2024/inputs/{}.txt", day)) {
+fn parse_and_solve(year: &str, day: &str) -> usize {
+    if let Ok(file) = File::open(format!("{}inputs/{}.txt", year, day)) {
         let reader = BufReader::new(file);
         return reader
             .split(NEW_LINE)
@@ -114,7 +114,7 @@ fn day02_1() {
         )
         .expect("Could not write to file");
     }
-    let result = parse_and_solve(&file_name);
+    let result = parse_and_solve("", &file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(result, 2)

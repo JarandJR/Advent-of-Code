@@ -2,11 +2,11 @@ use aoc2024::{parse_into_lines, DIRECTIONS};
 use itertools::Itertools;
 
 fn main() {
-    dbg!(parse_and_solve("04"));
+    dbg!(parse_and_solve(2024, "04"));
 }
 
-fn parse_and_solve(day: &str) -> usize {
-    if let Some(mut line_iter) = parse_into_lines(day) {
+fn parse_and_solve(year: i32, day: &str) -> usize {
+    if let Some(mut line_iter) = parse_into_lines(year, day) {
         let input = line_iter.join("\n");
         let rows = input.split('\n').count();
         return input.lines().enumerate().fold(0, |acc, (row, line)| {
@@ -88,7 +88,7 @@ MXMXAXMASX"
         )
         .expect("Could not write to file");
     }
-    let result = parse_and_solve(&file_name);
+    let result = parse_and_solve(2024, &file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(result, 18);

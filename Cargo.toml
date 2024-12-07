@@ -13,3 +13,6 @@ members = [ "2023", "2024" ]
 [workspace.dependencies]
 itertools = "0.13.0"
 num_cpus = "1.16.0"
+chrono = "0.4.38"
+
+[dependencies]

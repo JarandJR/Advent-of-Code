@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use aoc2024::parse_into_lines;
 
 fn main() {
-    dbg!(parse_and_solve("05"));
+    dbg!(parse_and_solve(2024, "05"));
 }
 
-fn parse_and_solve(day: &str) -> usize {
-    if let Some(line_iter) = parse_into_lines(day) {
+fn parse_and_solve(year: i32, day: &str) -> usize {
+    if let Some(line_iter) = parse_into_lines(year, day) {
         let mut page_order = HashMap::new();
         let orders = line_iter
             .filter_map(|line| {
@@ -113,7 +113,7 @@ fn day05_1() {
         )
         .expect("Could not write to file");
     }
-    let result = parse_and_solve(&file_name);
+    let result = parse_and_solve(2024, &file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(result, 143);

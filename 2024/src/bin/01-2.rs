@@ -6,7 +6,7 @@ use std::{
 };
 
 fn main() {
-    let (nums, right_heap) = parse("01");
+    let (nums, right_heap) = parse("2024", "01");
     dbg!(solve(nums, right_heap));
 }
 
@@ -19,10 +19,10 @@ fn solve(nums: Vec<usize>, right_set: HashMap<usize, usize>) -> usize {
     })
 }
 
-fn parse(day: &str) -> (Vec<usize>, HashMap<usize, usize>) {
+fn parse(year: &str, day: &str) -> (Vec<usize>, HashMap<usize, usize>) {
     let mut nums = Vec::new();
     let mut rigth_set = HashMap::new();
-    if let Ok(file) = File::open(format!("2024/inputs/{}.txt", day)) {
+    if let Ok(file) = File::open(format!("{}inputs/{}.txt", year, day)) {
         let mut reader = BufReader::new(file);
         let mut buffer = String::new();
         while {
@@ -71,7 +71,7 @@ fn day01_2() {
         )
         .expect("Could not write to file");
     }
-    let (left_heap, right_heap) = parse(&file_name);
+    let (left_heap, right_heap) = parse("", &file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(solve(left_heap, right_heap), 31);

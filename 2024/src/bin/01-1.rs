@@ -7,7 +7,7 @@ use std::{
 };
 
 fn main() {
-    let (left_heap, right_heap) = parse("01");
+    let (left_heap, right_heap) = parse("2024/", "01");
     dbg!(solve(left_heap, right_heap));
 }
 
@@ -22,11 +22,10 @@ fn solve(
     acc
 }
 
-fn parse(day: &str) -> (BinaryHeap<Reverse<i32>>, BinaryHeap<Reverse<i32>>) {
+fn parse(year: &str, day: &str) -> (BinaryHeap<Reverse<i32>>, BinaryHeap<Reverse<i32>>) {
     let mut left_heap = BinaryHeap::new();
     let mut rigth_heap = BinaryHeap::new();
-    if let Ok(file) = File::open(format!("2024/inputs/{}.txt", day)) {
-        println!("okey");
+    if let Ok(file) = File::open(format!("{}inputs/{}.txt", year, day)) {
         let mut reader = BufReader::new(file);
         let mut buffer = String::new();
         while {
@@ -75,7 +74,7 @@ fn day01_1() {
         )
         .expect("Could not write to file");
     }
-    let (left_heap, right_heap) = parse(&file_name);
+    let (left_heap, right_heap) = parse("", &file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(solve(left_heap, right_heap), 11);

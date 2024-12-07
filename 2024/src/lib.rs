@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use chrono::{Datelike, Local};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -103,6 +103,13 @@ impl std::ops::AddAssign for Vec2 {
     fn add_assign(&mut self, rhs: Self) {
         self.x += rhs.x;
         self.y += rhs.y;
+    }
+}
+
+impl std::ops::SubAssign for Vec2 {
+    fn sub_assign(&mut self, rhs: Self) {
+        self.x -= rhs.x;
+        self.y -= rhs.y;
     }
 }
 
@@ -220,26 +227,35 @@ impl Grid {
         dir: &Vec2,
     ) -> Box<dyn Iterator<Item = char> + 'a> {
         let len = if dir.x == 0 {
+            // 0, 0
             if dir.y == 0 {
                 0
+            // 0, -1
             } else if dir.y < 0 {
                 from.y
+            // 0, 1
             } else {
-                self.columns as i32 - from.y - 1
+                self.rows as i32 - from.y - 1
             }
         } else if dir.x < 0 {
+            // -1, 0
             if dir.y == 0 {
                 from.x
+            // -1, -1
             } else if dir.y < 0 {
                 std::cmp::min(from.x, from.y)
+            // -1, 1
             } else {
                 std::cmp::min(self.rows as i32 - from.y - 1, from.x)
             }
         } else {
+            // 1, 0
             if dir.y == 0 {
-                self.rows as i32 - from.x - 1
+                self.columns as i32 - from.x - 1
+            // 1, -1
             } else if dir.y < 0 {
                 std::cmp::min(self.columns as i32 - from.x - 1, from.y)
+            // 1, 1
             } else {
                 std::cmp::min(self.rows as i32 - from.y, self.columns as i32 - from.x) - 1
             }
@@ -272,15 +288,24 @@ where
     }
 }
 
-pub fn parse_into_byte_lines(day: &str) -> Option<impl Iterator<Item = Vec<u8>>> {
+pub fn parse_into_byte_lines_automatic(day: &str) -> Option<impl Iterator<Item = Vec<u8>>> {
+    let today = Local::now();
+    assert!(
+        today.month() == 12,
+        "This function can only be used in desember"
+    );
+    parse_into_byte_lines(today.year(), day)
+}
+
+pub fn parse_into_byte_lines(year: i32, day: &str) -> Option<impl Iterator<Item = Vec<u8>>> {
     let curnt_dir = std::env::current_dir()
         .expect("Could not get current direction")
         .display()
         .to_string();
-    let path = if curnt_dir.contains("2024") {
-        ""
+    let path = if curnt_dir.contains(year.to_string().as_str()) {
+        String::new()
     } else {
-        "2024/"
+        format!("{}/", year)
     };
     if let Ok(file) = File::open(format!("{}inputs/{}.txt", path, day)) {
         let reader = BufReader::new(file);
@@ -289,16 +314,25 @@ pub fn parse_into_byte_lines(day: &str) -> Option<impl Iterator<Item = Vec<u8>>>
     None
 }
 
-pub fn parse_into_lines(day: &str) -> Option<impl Iterator<Item = String>> {
+pub fn parse_into_lines_automatic(day: &str) -> Option<impl Iterator<Item = String>> {
+    let today = Local::now();
+    assert!(
+        today.month() == 12,
+        "This function can only be used in desember"
+    );
+    parse_into_lines(today.year(), day)
+}
+
+pub fn parse_into_lines(year: i32, day: &str) -> Option<impl Iterator<Item = String>> {
     use std::io::BufRead;
     let curnt_dir = std::env::current_dir()
         .expect("Could not get current direction")
         .display()
         .to_string();
-    let path = if curnt_dir.contains("2024") {
-        ""
+    let path = if curnt_dir.contains(year.to_string().as_str()) {
+        String::new()
     } else {
-        "2024/"
+        format!("{}/", year)
     };
     if let Ok(file) = std::fs::File::open(format!("{}inputs/{}.txt", path, day)) {
         let reader = std::io::BufReader::new(file);
