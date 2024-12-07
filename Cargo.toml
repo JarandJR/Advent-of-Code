@@ -16,3 +16,4 @@ num_cpus = "1.16.0"
 chrono = "0.4.38"
 
 [dependencies]
+chrono = "0.4.38"
