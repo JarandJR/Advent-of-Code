@@ -1,4 +1,4 @@
-use aoc2024::parse_into_lines_automatic;
+use common::io::parse_into_lines_automatic;
 
 fn main() {
     dbg!(parse_and_solve("07", false));

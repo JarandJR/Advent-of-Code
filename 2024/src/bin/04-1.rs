@@ -1,4 +1,5 @@
-use aoc2024::{parse_into_lines, DIRECTIONS};
+use aoc2024::DIRECTIONS;
+use common::io::parse_into_lines;
 use itertools::Itertools;
 
 fn main() {

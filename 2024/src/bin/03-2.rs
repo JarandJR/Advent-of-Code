@@ -1,6 +1,6 @@
 use std::iter::Peekable;
 
-use aoc2024::parse_into_lines;
+use common::io::parse_into_lines;
 
 fn main() {
     dbg!(parse_and_solve(2024, "03"));

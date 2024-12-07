@@ -1,7 +1,6 @@
+use chrono::{Datelike, Local};
 use std::fs::File;
 use std::io::Write;
-use chrono::{Datelike, Local};
-
 
 fn main() {
     let today = Local::now();
@@ -13,6 +12,7 @@ fn main() {
         let mut file = File::create(&file_path).expect("Could not create file");
         let template = include_str!("template.rs");
         let template = template.replace("DAY", &day);
-        file.write_all(template.as_bytes()).expect("Could not write to file");
+        file.write_all(template.as_bytes())
+            .expect("Could not write to file");
     }
 }

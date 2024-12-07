@@ -1,9 +1,7 @@
 [package]
-name = "aoc2024"
+name = "common"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-itertools = { workspace = true }
 chrono = { workspace = true }
-common = { path = "../common" }

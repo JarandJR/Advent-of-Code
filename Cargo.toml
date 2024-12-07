@@ -8,7 +8,7 @@ edition = "2021"
 [workspace]
 resolver = "2"
 
-members = [ "2023", "2024" ]
+members = [ "2023", "2024" , "common"]
 
 [workspace.dependencies]
 itertools = "0.13.0"

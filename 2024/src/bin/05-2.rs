@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use aoc2024::parse_into_lines;
+use common::io::parse_into_lines;
 use itertools::Itertools;
 
 fn main() {

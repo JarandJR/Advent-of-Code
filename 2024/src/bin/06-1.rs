@@ -1,6 +1,9 @@
 use std::collections::HashSet;
 
-use aoc2024::{parse_into_lines, Grid, Vec2};
+use common::{
+    datastructs::{string_grid::Grid, vec2::Vec2},
+    io::parse_into_lines,
+};
 use itertools::Itertools;
 
 fn main() {
