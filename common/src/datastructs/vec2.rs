@@ -63,6 +63,10 @@ impl Vec2 {
     pub fn abs(&self) -> Self {
         Vec2::new(self.x.abs(), self.y.abs())
     }
+
+    pub fn inverse(&self) -> Self {
+        Vec2::new(self.x * -1, self.y * -1)
+    }
 }
 
 impl From<(usize, usize)> for Vec2 {
