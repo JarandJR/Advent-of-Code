@@ -1,3 +1,5 @@
+use std::ops::{Index, IndexMut};
+
 use super::{vec2::Vec2, vector::Vector};
 
 pub struct Grid {
@@ -102,24 +104,105 @@ impl Grid {
     }
 }
 
-impl<'a, T> From<T> for Grid
-where
-    T: IntoIterator,
-    T::Item: Into<String>,
-{
-    fn from(value: T) -> Self {
+/// Helper function for the index implementation as it leakes memory.
+/// See index documentation for example.
+pub fn reclaime_leaked_memory(leaked: &[char]) {
+    let ptr = leaked.as_ptr();
+    let len = leaked.len();
+    unsafe {
+        let ptr = ptr as *mut char;
+        let _reclamed_mem = Box::from_raw(std::ptr::slice_from_raw_parts_mut(ptr, len));
+    }
+}
+
+impl Index<usize> for Grid {
+    type Output = [char];
+
+    /// This intenionally leaks memory and is only intende for
+    /// small programs like solutions to AOC.
+    ///
+    /// Consider using the helper function 'reclaime_leaked_memory'
+    /// if this is called several times throughout the program.
+    ///
+    /// /// # Example
+    ///
+    /// ```rust
+    /// // Example where memory is intentionally leaked
+    /// // and then reclaimed
+    /// let grid = Grid::from("----------
+    /// ----x-----
+    /// --------y-")
+    ///
+    /// let leaked_slice: &[char] = &grid[0];
+    /// reclaime_leaked_memory(leaked_slice);
+    /// ```
+    ///
+    /// ```rust
+    /// // Example where memory is leaked
+    /// let grid = Grid::from("----------
+    /// ----x-----
+    /// --------y-")
+    /// // Leaks data unable to be reclaimed
+    /// let x: &char = grid[1][4];
+    /// ```
+    fn index(&self, index: usize) -> &Self::Output {
+        let start = index * self.columns;
+        let end = (index + 1) * self.columns;
+
+        let row_str = &self.grid[start..end];
+        let row_vec = row_str.chars().collect::<Vec<char>>();
+        Box::leak(row_vec.into_boxed_slice())
+    }
+}
+
+impl IndexMut<usize> for Grid {
+    /// This is the same as refrence indexing but with a mutable refrence instead
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        let start = index * self.columns;
+        let end = (index + 1) * self.columns;
+
+        let row_str = &self.grid[start..end];
+        let row_vec = row_str.chars().collect::<Vec<char>>();
+        Box::leak(row_vec.into_boxed_slice())
+    }
+}
+
+impl<'a> FromIterator<&'a str> for Grid {
+    fn from_iter<I: IntoIterator<Item = &'a str>>(iter: I) -> Self {
         let mut rows = 0;
         let mut columns = 0;
-        let grid = value
+
+        let grid_lines = iter
             .into_iter()
-            .map(|str| {
-                let str = str.into();
-                columns = str.len();
+            .map(|line| {
+                if rows == 0 {
+                    columns = line.len();
+                }
                 rows += 1;
-                str
+                line.to_string()
+            })
+            .collect::<Vec<String>>();
+
+        let grid_string = grid_lines.join("");
+        Grid::new(grid_string, rows, columns)
+    }
+}
+
+impl<'a> From<&'a str> for Grid {
+    fn from(input: &'a str) -> Self {
+        let mut rows = 0;
+        let mut columns = 0;
+        let grid = input
+            .lines()
+            .map(|l| {
+                if columns == 0 {
+                    columns = l.len();
+                }
+                rows += 1;
+                l
             })
             .collect::<String>();
-        assert!(grid.len() > 0, "Provided empty iterator");
-        Self::new(grid, rows, columns)
+
+        Grid::new(grid, rows, columns)
     }
 }

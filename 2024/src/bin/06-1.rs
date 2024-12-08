@@ -29,7 +29,7 @@ fn parse_and_solve(year: i32, day: &str) -> usize {
                 start
             },
         ));
-        let grid = Grid::from(input.lines());
+        let grid = input.lines().collect::<Grid>();
         let mut direction_iter = Vec2::FOUR_CONNECTEDNESS.iter().cycle();
         let mut curnt_dir = direction_iter.next().unwrap();
         let mut memory = HashSet::new();
