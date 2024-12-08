@@ -59,11 +59,21 @@ impl Vec2 {
     pub fn to_index(&self, columns: i32) -> i32 {
         self.x + self.y * columns
     }
+
+    pub fn abs(&self) -> Self {
+        Vec2::new(self.x.abs(), self.y.abs())
+    }
 }
 
 impl From<(usize, usize)> for Vec2 {
     fn from(value: (usize, usize)) -> Self {
         Self::new(value.0 as i32, value.1 as i32)
+    }
+}
+
+impl From<(i32, i32)> for Vec2 {
+    fn from(value: (i32, i32)) -> Self {
+        Self::new(value.0, value.1)
     }
 }
 
