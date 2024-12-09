@@ -1,7 +1,8 @@
-use std::ops::{Index, IndexMut};
+use std::ops::Index;
 
 use super::{vec2::Vec2, vector::Vector};
 
+#[derive(Debug)]
 pub struct Grid {
     grid: String,
     pub rows: usize,
@@ -146,18 +147,6 @@ impl Index<usize> for Grid {
     /// let x: &char = grid[1][4];
     /// ```
     fn index(&self, index: usize) -> &Self::Output {
-        let start = index * self.columns;
-        let end = (index + 1) * self.columns;
-
-        let row_str = &self.grid[start..end];
-        let row_vec = row_str.chars().collect::<Vec<char>>();
-        Box::leak(row_vec.into_boxed_slice())
-    }
-}
-
-impl IndexMut<usize> for Grid {
-    /// This is the same as refrence indexing but with a mutable refrence instead
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         let start = index * self.columns;
         let end = (index + 1) * self.columns;
 
