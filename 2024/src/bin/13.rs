@@ -108,8 +108,13 @@ fn eqs_from_machine(crnt_machine: &Vec<Tupple>) -> (Equation, Equation) {
 /// Cramer's rule for solution of a linear equation system
 fn cramer(eq1: Equation, eq2: Equation) -> Option<Tupple> {
     /*
+        2x2 system of linear equation
         a*x + b*y = e
         c*x + d*y = f
+
+        Matrix Form:
+        [a  b] [x]   = [e]
+        [c  d] [y]     [f]
     */
     let (a, b, e) = eq1;
     let (c, d, f) = eq2;
