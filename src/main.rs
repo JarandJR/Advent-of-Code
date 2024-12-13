@@ -5,8 +5,8 @@ use std::io::Write;
 fn main() {
     let today = Local::now();
     let year = today.year().to_string();
-    let day = today.day().to_string();
-
+    let day = format!("{:02}", today.day().to_string());
+    println!("day {}", day);
     // Input file
     let input_file_path = format!("{}/inputs/{}.txt", year, day);
     File::create(&input_file_path).expect("Could not create file");
