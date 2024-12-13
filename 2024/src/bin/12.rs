@@ -92,9 +92,8 @@ fn parse_and_solve_part_2(day: &str) -> usize {
                 let crnt = grid[row][column];
                 println!("CURRENT: {}", crnt);
                 let mut plants = 0;
-                let mut edges = 0;
                 let mut stack = vec![at];
-                let mut sides = HashSet::new();
+                let mut corners = HashSet::new();
                 while let Some(at) = stack.pop() {
                     if visited.contains(&at) {
                         continue;
@@ -104,15 +103,35 @@ fn parse_and_solve_part_2(day: &str) -> usize {
                     }
                     visited.insert(at);
                     println!("AT: {:?}", at);
+                    // A corner is a point & direction
+                    // Valid corenr is defined by the potential direction, e.g NW in (0,0)
+                    // found by checking that diagonal and if it is not equal to CURRENT, potential
+                    /*
+                       oooo
+                       oxox
+                       oooo
+
+                       That means that N Also needs to be not equal to CURRENT
+                       && W
+
+                       S and E must then be equal to the same
+
+
+                       (0, 0) have 4 potential corners
+                       NW -> valid because N && W both == None
+                               && S && E both == CURRENT
+
+                       NE -> Not valid because N = None && E == o are not equal
+                           Same for S & W
+
+                       SW -> Not valid because S = o & W = None. not equal
+
+                       SE -> Valid because S & E == o
+                           & N & W == None
+
+                           Result is number of plant * corners
+                    */
                     for (dir, from, n) in get_neighbors_and_dir(&at, rows, columns) {
-                        let (level, axis) = if dir.x == 0 {
-                            println!("Y");
-                            (from.y, 'y')
-                        } else {
-                            println!("X");
-                            (from.x, 'x')
-                        };
-                        println!("dir: {:?}, lv: {}", dir, level);
                         match n {
                             Some(pos) => {
                                 let at = grid[pos.row()][pos.column()];
@@ -121,40 +140,29 @@ fn parse_and_solve_part_2(day: &str) -> usize {
                                     if visited.contains(&pos) {
                                         continue;
                                     }
-                                    if sides.contains(&(dir, level, axis)) {
-                                        println!("Removed");
-                                        sides.remove(&(dir, level, axis));
-                                    }
                                     stack.push(pos);
                                 } else {
-                                    if !sides.contains(&(dir, level, axis)) {
-                                        edges += 1
-                                    }
-                                    let res = sides.insert((dir, level, axis));
+                                    let res = corners.insert(0);
                                     println!("inserted: {}", res);
                                 }
                             }
                             None => {
                                 println!("neighbor: {:?}", n);
-                                if !sides.contains(&(dir, level, axis)) {
-                                    edges += 1
-                                }
-                                let res = sides.insert((dir, level, axis));
+                                let res = corners.insert(0);
                                 println!("inserted: {}", res);
                             }
                         };
                         println!();
                     }
-                    println!("plants: {} sides {}", plants, sides.len());
-                    println!("actual sides {}", edges);
+                    println!("plants: {} sides {}", plants, corners.len());
                     println!("------------------------------------");
                 }
 
                 //let edges = sides.len();
-                println!("plants: {}\nedges {}", plants, edges);
-                println!("region {}\n", plants * edges);
-                println!("sides.len {}", sides.len());
-                sum += plants * edges;
+                println!("plants: {}\nedges {}", plants, corners.len());
+                println!("region {}\n", plants * corners.len());
+                println!("sides.len {}", corners.len());
+                sum += plants * corners.len();
             }
         }
         return sum as usize;
