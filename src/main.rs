@@ -9,7 +9,7 @@ fn main() {
 
     // Input file
     let input_file_path = format!("{}/inputs/{}.txt", year, day);
-    let file = File::create(&input_file_path).expect("Could not create file");
+    File::create(&input_file_path).expect("Could not create file");
 
     // Solution file
     let solution_file_path = format!("{}/src/bin/{}.rs", year, day);
