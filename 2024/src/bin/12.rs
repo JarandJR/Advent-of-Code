@@ -27,9 +27,9 @@ fn parse_and_solve_part_1(day: &str) -> usize {
                 if visited.contains(&at) {
                     continue;
                 }
-                let crnt = grid[row][column];
-                let mut plants = 0;
                 let mut edges = 0;
+                let mut plants = 0;
+                let crnt = grid[row][column];
                 let mut stack = vec![at];
                 while let Some(at) = stack.pop() {
                     if visited.contains(&at) {
@@ -75,12 +75,13 @@ fn parse_and_solve_part_2(day: &str) -> usize {
                 line.chars().collect::<Vec<char>>()
             })
             .collect::<Vec<Vec<char>>>();
-        grid.iter().for_each(|r| {
-            r.iter().for_each(|c| print!("{c}"));
-            println!();
-        });
-        println!();
 
+        let corner_directions = [
+            (Vec2::NORTH_WEST, Vec2::NORTH, Vec2::WEST),
+            (Vec2::NORTH_EAST, Vec2::NORTH, Vec2::EAST),
+            (Vec2::SOUTH_WEST, Vec2::SOUTH, Vec2::WEST),
+            (Vec2::SOUTH_EAST, Vec2::SOUTH, Vec2::EAST),
+        ];
         let mut sum = 0;
         let mut visited = HashSet::new();
         for row in 0..rows {
@@ -89,11 +90,10 @@ fn parse_and_solve_part_2(day: &str) -> usize {
                 if visited.contains(&at) {
                     continue;
                 }
-                let crnt = grid[row][column];
-                println!("CURRENT: {}", crnt);
                 let mut plants = 0;
+                let mut corners = 0;
+                let crnt = grid[row][column];
                 let mut stack = vec![at];
-                let mut corners = HashSet::new();
                 while let Some(at) = stack.pop() {
                     if visited.contains(&at) {
                         continue;
@@ -102,72 +102,68 @@ fn parse_and_solve_part_2(day: &str) -> usize {
                         plants += 1;
                     }
                     visited.insert(at);
-                    println!("AT: {:?}", at);
-                    // A corner is a point & direction
-                    // Valid corenr is defined by the potential direction, e.g NW in (0,0)
-                    // found by checking that diagonal and if it is not equal to CURRENT, potential
-                    /*
-                       oooo
-                       oxox
-                       oooo
-
-                       That means that N Also needs to be not equal to CURRENT
-                       && W
-
-                       S and E must then be equal to the same
-
-
-                       (0, 0) have 4 potential corners
-                       NW -> valid because N && W both == None
-                               && S && E both == CURRENT
-
-                       NE -> Not valid because N = None && E == o are not equal
-                           Same for S & W
-
-                       SW -> Not valid because S = o & W = None. not equal
-
-                       SE -> Valid because S & E == o
-                           & N & W == None
-
-                           Result is number of plant * corners
-                    */
-                    for (dir, from, n) in get_neighbors_and_dir(&at, rows, columns) {
+                    // Count corners
+                    corner_directions
+                        .iter()
+                        .map(|(corner_dir, vert, horiz)| {
+                            let dia =
+                                get_value_in_grid(at + *corner_dir, rows, columns, &grid, crnt);
+                            let vertical =
+                                get_value_in_grid(at + *vert, rows, columns, &grid, crnt);
+                            let horizontal =
+                                get_value_in_grid(at + *horiz, rows, columns, &grid, crnt);
+                            (dia, vertical, horizontal)
+                        })
+                        .for_each(|(dia, vert, horiz)| match dia {
+                            Some(_) => {
+                                if vert == None && horiz == None {
+                                    corners += 1;
+                                }
+                            }
+                            None => {
+                                if vert == horiz {
+                                    corners += 1;
+                                }
+                            }
+                        });
+                    // Search for the shape
+                    for n in get_neighbors(&at, rows, columns) {
                         match n {
                             Some(pos) => {
                                 let at = grid[pos.row()][pos.column()];
-                                println!("at neighbor: {}", at);
                                 if at == crnt {
                                     if visited.contains(&pos) {
                                         continue;
                                     }
                                     stack.push(pos);
-                                } else {
-                                    let res = corners.insert(0);
-                                    println!("inserted: {}", res);
                                 }
                             }
-                            None => {
-                                println!("neighbor: {:?}", n);
-                                let res = corners.insert(0);
-                                println!("inserted: {}", res);
-                            }
+                            None => {}
                         };
-                        println!();
                     }
-                    println!("plants: {} sides {}", plants, corners.len());
-                    println!("------------------------------------");
                 }
-
-                //let edges = sides.len();
-                println!("plants: {}\nedges {}", plants, corners.len());
-                println!("region {}\n", plants * corners.len());
-                println!("sides.len {}", corners.len());
-                sum += plants * corners.len();
+                sum += plants * corners;
             }
         }
         return sum as usize;
     }
     0
+}
+
+fn get_value_in_grid(
+    p: Vec2,
+    rows: usize,
+    columns: usize,
+    grid: &Vec<Vec<char>>,
+    crnt: char,
+) -> Option<char> {
+    if !((0_..rows).contains(&(p.y as usize)) && (0..columns).contains(&(p.x as usize))) {
+        None
+    } else if grid[p.row()][p.column()] == crnt {
+        Some(grid[p.row()][p.column()])
+    } else {
+        None
+    }
 }
 
 fn get_neighbors(at: &Vec2, rows: usize, columns: usize) -> Vec<Option<Vec2>> {
@@ -181,25 +177,6 @@ fn get_neighbors(at: &Vec2, rows: usize, columns: usize) -> Vec<Option<Vec2>> {
                 return None;
             }
             Some(next)
-        })
-        .collect()
-}
-
-fn get_neighbors_and_dir(
-    at: &Vec2,
-    rows: usize,
-    columns: usize,
-) -> Vec<(Vec2, Vec2, Option<Vec2>)> {
-    Vec2::FOUR_CONNECTEDNESS
-        .iter()
-        .map(|dir| {
-            let next = *at + *dir;
-            if !((0_..rows).contains(&(next.y as usize))
-                && (0..columns).contains(&(next.x as usize)))
-            {
-                return (*dir, *at, None);
-            }
-            (*dir, *at, Some(next))
         })
         .collect()
 }
