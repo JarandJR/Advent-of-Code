@@ -1,12 +1,24 @@
-use std::ops::Index;
+use std::{fmt::Debug, ops::Index};
 
 use super::{vec2::Vec2, vector::Vector};
 
-#[derive(Debug)]
 pub struct Grid {
     grid: String,
     pub rows: usize,
     pub columns: usize,
+}
+
+impl Debug for Grid {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Rows: {}", self.rows)?;
+        writeln!(f, "Columns: {}\n", self.columns)?;
+        for row in 0..self.rows {
+            let start = row * self.columns;
+            let end = start + self.columns;
+            writeln!(f, "{}", self.slice(start, end))?;
+        }
+        Ok(())
+    }
 }
 
 impl Grid {
@@ -158,6 +170,27 @@ impl Index<usize> for Grid {
 
 impl<'a> FromIterator<&'a str> for Grid {
     fn from_iter<I: IntoIterator<Item = &'a str>>(iter: I) -> Self {
+        let mut rows = 0;
+        let mut columns = 0;
+
+        let grid_lines = iter
+            .into_iter()
+            .map(|line| {
+                if rows == 0 {
+                    columns = line.len();
+                }
+                rows += 1;
+                line.to_string()
+            })
+            .collect::<Vec<String>>();
+
+        let grid_string = grid_lines.join("");
+        Grid::new(grid_string, rows, columns)
+    }
+}
+
+impl FromIterator<String> for Grid {
+    fn from_iter<I: IntoIterator<Item = String>>(iter: I) -> Self {
         let mut rows = 0;
         let mut columns = 0;
 
