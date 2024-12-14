@@ -37,7 +37,7 @@ fn dayDAY_1() {
     let result = parse_and_solve_part_1(&file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
-    assert_eq!(result, 0);
+    assert_eq!(result, 1);
 }
 
 #[test]
@@ -58,5 +58,5 @@ fn dayDAY_2() {
     let result = parse_and_solve_part_2(&file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
-    assert_eq!(result, 0);
+    assert_eq!(result, 1);
 }
