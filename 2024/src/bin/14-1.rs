@@ -2,11 +2,10 @@ use common::io::parse_into_lines_automatic;
 use itertools::Itertools;
 
 fn main() {
-    dbg!(parse_and_solve_part_1("14", 101, 103));
-    dbg!(parse_and_solve_part_2("14"));
+    dbg!(parse_and_solve("14", 101, 103));
 }
 
-fn parse_and_solve_part_1(day: &str, width: usize, hight: usize) -> usize {
+fn parse_and_solve(day: &str, width: usize, hight: usize) -> usize {
     if let Some(line_iter) = parse_into_lines_automatic(day) {
         return line_iter
             .filter_map(|line| {
@@ -82,13 +81,6 @@ fn parse_and_solve_part_1(day: &str, width: usize, hight: usize) -> usize {
     0
 }
 
-fn parse_and_solve_part_2(day: &str) -> usize {
-    if let Some(line_iter) = parse_into_lines_automatic(day) {
-        return 0;
-    }
-    0
-}
-
 #[test]
 fn day14_1() {
     use std::fs::{remove_file, File};
@@ -115,40 +107,8 @@ p=9,5 v=-3,-3"
         )
         .expect("Could not write to file");
     }
-    let result = parse_and_solve_part_1(&file_name, 11, 7);
+    let result = parse_and_solve(&file_name, 11, 7);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(result, 12);
-}
-
-#[test]
-fn day14_2() {
-    use std::fs::{remove_file, File};
-    let file_name = "test_14_2";
-    let file_path = format!("inputs/{}.txt", file_name);
-    {
-        // Setup for test
-        use std::io::Write;
-        let mut file = File::create(&file_path).expect("Could not create file");
-        writeln!(
-            file,
-            "p=0,4 v=3,-3
-p=6,3 v=-1,-3
-p=10,3 v=-1,2
-p=2,0 v=2,-1
-p=0,0 v=1,3
-p=3,0 v=-2,-2
-p=7,6 v=-1,-3
-p=3,0 v=-1,-2
-p=9,3 v=2,3
-p=7,3 v=-1,2
-p=2,4 v=2,-3
-p=9,5 v=-3,-3"
-        )
-        .expect("Could not write to file");
-    }
-    let result = parse_and_solve_part_2(&file_name);
-    // Clean up
-    remove_file(file_path).expect("Could not remove file");
-    assert_eq!(result, 1);
 }
