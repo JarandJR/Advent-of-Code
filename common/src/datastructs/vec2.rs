@@ -110,3 +110,9 @@ impl std::ops::Sub for Vec2 {
         Self::new(self.x - rhs.x, self.y - rhs.y)
     }
 }
+
+impl Default for Vec2 {
+    fn default() -> Self {
+        Self::new(1, 1)
+    }
+}
