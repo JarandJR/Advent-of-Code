@@ -102,7 +102,6 @@ fn parse_and_solve(day: &str) -> usize {
                 Tile::Wall => {}
             }
         }
-
         return grid
             .iter()
             .enumerate()
