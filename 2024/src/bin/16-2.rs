@@ -15,7 +15,7 @@ fn parse_and_solve(day: &str) -> usize {
         let mut end = Vec2::default();
         let mut rows = 0;
         let mut columns = 0;
-        let mut grid = line_iter
+        let grid = line_iter
             .enumerate()
             .map(|(row, line)| {
                 columns = line.len();
@@ -73,10 +73,6 @@ fn parse_and_solve(day: &str) -> usize {
                 ),
             ]);
         }
-        for pos in paths.get(&distance.get(&end).unwrap()).unwrap() {
-            grid[pos.row()][pos.column()] = 'O';
-        }
-
         return paths.get(&distance.get(&end).unwrap()).unwrap().len();
     }
     0
