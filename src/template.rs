@@ -26,7 +26,7 @@ fn dayDAY_1() {
         )
         .expect("Could not write to file");
     }
-    let result = parse_and_solve_part_1(&file_name);
+    let result = parse_and_solve(&file_name);
     // Clean up
     remove_file(file_path).expect("Could not remove file");
     assert_eq!(result, 1);

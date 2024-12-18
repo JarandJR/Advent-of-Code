@@ -75,6 +75,12 @@ impl Vec2 {
     pub fn rotate_90_counter_clockwise(&self) -> Self {
         Vec2::new(self.y, -self.x)
     }
+
+    pub fn to_tupple(&self) -> (usize, usize) {
+        assert!(self.x >= 0, "x can't be negative");
+        assert!(self.y >= 0, "y can't be negative");
+        (self.x as usize, self.y as usize)
+    }
 }
 
 impl From<(usize, usize)> for Vec2 {
