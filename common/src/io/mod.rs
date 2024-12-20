@@ -6,13 +6,13 @@ use std::{
 
 pub const NEW_LINE: u8 = b'\n';
 
-pub fn parse_into_byte_lines_automatic(day: &str) -> Option<impl Iterator<Item = Vec<u8>>> {
+pub fn parse_into_byte_lines_automatic(day: &str) -> impl Iterator<Item = Vec<u8>> {
     let today = Local::now();
     assert!(
         today.month() == 12,
         "This function can only be used in desember"
     );
-    parse_into_byte_lines(today.year(), day)
+    parse_into_byte_lines(today.year(), day).unwrap()
 }
 
 pub fn parse_into_byte_lines(year: i32, day: &str) -> Option<impl Iterator<Item = Vec<u8>>> {
@@ -32,13 +32,13 @@ pub fn parse_into_byte_lines(year: i32, day: &str) -> Option<impl Iterator<Item 
     None
 }
 
-pub fn parse_into_lines_automatic(day: &str) -> Option<impl Iterator<Item = String>> {
+pub fn parse_into_lines_automatic(day: &str) -> impl Iterator<Item = String> {
     let today = Local::now();
     assert!(
         today.month() == 12,
         "This function can only be used in desember"
     );
-    parse_into_lines(today.year(), day)
+    parse_into_lines(today.year(), day).unwrap()
 }
 
 pub fn parse_into_lines(year: i32, day: &str) -> Option<impl Iterator<Item = String>> {

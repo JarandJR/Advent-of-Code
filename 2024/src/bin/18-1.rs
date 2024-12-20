@@ -1,75 +1,63 @@
 use std::collections::HashSet;
 
-use common::{datastructs::vec2::Vec2, io::parse_into_lines_automatic};
+use common::{datatypes::vec2::Vec2, io::parse_into_lines_automatic};
 use itertools::Itertools;
 
 fn main() {
-    dbg!(parse_and_solve("18", 70, 1024));
+    dbg!(parse_and_solve(parse_into_lines_automatic("18"), 70, 1024));
 }
 
-fn parse_and_solve(day: &str, size: usize, bytes: usize) -> usize {
-    if let Some(line_iter) = parse_into_lines_automatic(day) {
-        let corrupted_bytes = line_iter
-            .take(bytes)
-            .flat_map(|line| {
-                line.split(',')
-                    .filter_map(|str| str.parse::<usize>().ok())
-                    .tuple_windows()
-                    .map(|(x, y)| Vec2::from_point(x, y))
-                    .collect::<HashSet<Vec2>>()
-            })
-            .collect::<HashSet<Vec2>>();
-        let end = Vec2::from_row_column(size, size);
-        let start = Vec2::new(0, 0);
+fn parse_and_solve(line_iter: impl Iterator<Item = String>, size: usize, bytes: usize) -> usize {
+    let corrupted_bytes = line_iter
+        .take(bytes)
+        .flat_map(|line| {
+            line.split(',')
+                .filter_map(|str| str.parse::<usize>().ok())
+                .tuple_windows()
+                .map(|(x, y)| Vec2::from_point(x, y))
+                .collect::<HashSet<Vec2>>()
+        })
+        .collect::<HashSet<Vec2>>();
+    let end = Vec2::from_row_column(size, size);
+    let start = Vec2::new(0, 0);
 
-        let mut stack = vec![(start, 0)];
-        let mut visited = HashSet::new();
-        loop {
-            // BFS
-            let mut next_breadth_search = Vec::new();
-            while let Some((p, d)) = stack.pop() {
-                if visited.contains(&p) {
-                    continue;
-                }
-                if p == end {
-                    return d;
-                }
-                visited.insert(p);
-                let next = Vec2::FOUR_CONNECTEDNESS
-                    .iter()
-                    .filter_map(|dir| {
-                        let dir = *dir + p;
-                        if !((0_i32..=size as i32).contains(&dir.y)
-                            && (0_i32..=size as i32).contains(&dir.x))
-                        {
-                            return None;
-                        }
-                        if corrupted_bytes.contains(&dir) {
-                            return None;
-                        }
-                        Some((dir, d + 1))
-                    })
-                    .collect::<Vec<(Vec2, usize)>>();
-                next_breadth_search.extend(next);
+    let mut stack = vec![(start, 0)];
+    let mut visited = HashSet::new();
+    loop {
+        // BFS
+        let mut next_breadth_search = Vec::new();
+        while let Some((p, d)) = stack.pop() {
+            if visited.contains(&p) {
+                continue;
             }
-            stack = next_breadth_search;
+            if p == end {
+                return d;
+            }
+            visited.insert(p);
+            let next = Vec2::FOUR_CONNECTEDNESS
+                .iter()
+                .filter_map(|dir| {
+                    let dir = *dir + p;
+                    if !((0_i32..=size as i32).contains(&dir.y)
+                        && (0_i32..=size as i32).contains(&dir.x))
+                    {
+                        return None;
+                    }
+                    if corrupted_bytes.contains(&dir) {
+                        return None;
+                    }
+                    Some((dir, d + 1))
+                })
+                .collect::<Vec<(Vec2, usize)>>();
+            next_breadth_search.extend(next);
         }
+        stack = next_breadth_search;
     }
-    panic!("Failed to read input file")
 }
 
 #[test]
 fn day18_1() {
-    use std::fs::{remove_file, File};
-    let file_name = "test_18_1";
-    let file_path = format!("inputs/{}.txt", file_name);
-    {
-        // Setup for test
-        use std::io::Write;
-        let mut file = File::create(&file_path).expect("Could not create file");
-        writeln!(
-            file,
-            "5,4
+    let input = "5,4
 4,2
 4,5
 3,0
@@ -93,12 +81,7 @@ fn day18_1() {
 1,0
 0,5
 1,6
-2,0"
-        )
-        .expect("Could not write to file");
-    }
-    let result = parse_and_solve(&file_name, 6, 12);
-    // Clean up
-    remove_file(file_path).expect("Could not remove file");
+2,0";
+    let result = parse_and_solve(input.lines().map(|s| s.to_owned()), 6, 12);
     assert_eq!(result, 22);
 }

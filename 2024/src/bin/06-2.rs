@@ -1,9 +1,6 @@
 use std::collections::HashSet;
 
-use common::{
-    datastructs::{string_grid::Grid, vec2::Vec2},
-    io::parse_into_lines,
-};
+use common::{datastructs::string_grid::StrGrid, datatypes::vec2::Vec2, io::parse_into_lines};
 use itertools::Itertools;
 
 fn main() {
@@ -30,7 +27,7 @@ fn parse_and_solve(year: i32, day: &str) -> usize {
             },
         ));
         let mut at = start.clone();
-        let grid = input.lines().collect::<Grid>();
+        let grid = input.lines().collect::<StrGrid>();
         let mut direction_iter = Vec2::FOUR_CONNECTEDNESS.iter().cycle().peekable();
         let mut curnt_dir = direction_iter.next().unwrap();
         let mut memory = HashSet::new();

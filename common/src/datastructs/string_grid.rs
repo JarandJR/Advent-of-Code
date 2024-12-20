@@ -1,14 +1,14 @@
 use std::{fmt::Debug, ops::Index};
 
-use super::{vec2::Vec2, vector::Vector};
+use crate::datatypes::{vec2::Vec2, vector::Vector};
 
-pub struct Grid {
+pub struct StrGrid {
     grid: String,
     pub rows: usize,
     pub columns: usize,
 }
 
-impl Debug for Grid {
+impl Debug for StrGrid {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Rows: {}", self.rows)?;
         writeln!(f, "Columns: {}\n", self.columns)?;
@@ -21,7 +21,7 @@ impl Debug for Grid {
     }
 }
 
-impl Grid {
+impl StrGrid {
     /// Creates a grid of a string
     pub fn new(input: String, rows: usize, columns: usize) -> Self {
         Self {
@@ -128,7 +128,7 @@ pub fn reclaime_leaked_memory(leaked: &[char]) {
     }
 }
 
-impl Index<usize> for Grid {
+impl Index<usize> for StrGrid {
     type Output = [char];
 
     /// This intenionally leaks memory and is only intende for
@@ -168,7 +168,7 @@ impl Index<usize> for Grid {
     }
 }
 
-impl<'a> FromIterator<&'a str> for Grid {
+impl<'a> FromIterator<&'a str> for StrGrid {
     fn from_iter<I: IntoIterator<Item = &'a str>>(iter: I) -> Self {
         let mut rows = 0;
         let mut columns = 0;
@@ -185,11 +185,11 @@ impl<'a> FromIterator<&'a str> for Grid {
             .collect::<Vec<String>>();
 
         let grid_string = grid_lines.join("");
-        Grid::new(grid_string, rows, columns)
+        StrGrid::new(grid_string, rows, columns)
     }
 }
 
-impl FromIterator<String> for Grid {
+impl FromIterator<String> for StrGrid {
     fn from_iter<I: IntoIterator<Item = String>>(iter: I) -> Self {
         let mut rows = 0;
         let mut columns = 0;
@@ -206,11 +206,11 @@ impl FromIterator<String> for Grid {
             .collect::<Vec<String>>();
 
         let grid_string = grid_lines.join("");
-        Grid::new(grid_string, rows, columns)
+        StrGrid::new(grid_string, rows, columns)
     }
 }
 
-impl<'a> From<&'a str> for Grid {
+impl<'a> From<&'a str> for StrGrid {
     fn from(input: &'a str) -> Self {
         let mut rows = 0;
         let mut columns = 0;
@@ -225,6 +225,6 @@ impl<'a> From<&'a str> for Grid {
             })
             .collect::<String>();
 
-        Grid::new(grid, rows, columns)
+        StrGrid::new(grid, rows, columns)
     }
 }

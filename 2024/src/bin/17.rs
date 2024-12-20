@@ -4,54 +4,48 @@ use common::io::parse_into_lines_automatic;
 use itertools::Itertools;
 
 fn main() {
-    dbg!(parse_and_solve_part_1("17"));
-    dbg!(parse_and_solve_part_2("17"));
+    dbg!(parse_and_solve_part_1(parse_into_lines_automatic("17")));
+    dbg!(parse_and_solve_part_2(parse_into_lines_automatic("17")));
 }
 
-fn parse_and_solve_part_1(day: &str) -> String {
-    if let Some(line_iter) = parse_into_lines_automatic(day) {
-        let mut computer = Computer::from_iter(line_iter);
-        return computer.run();
-    }
-    panic!("Failed to read input file")
+fn parse_and_solve_part_1(line_iter: impl Iterator<Item = String>) -> String {
+    let mut computer = Computer::from_iter(line_iter);
+    computer.run()
 }
 
-fn parse_and_solve_part_2(day: &str) -> usize {
-    if let Some(line_iter) = parse_into_lines_automatic(day) {
-        let mut computer = Computer::from_iter(line_iter);
-        let instructions = computer.instructions.len();
+fn parse_and_solve_part_2(line_iter: impl Iterator<Item = String>) -> usize {
+    let mut computer = Computer::from_iter(line_iter);
+    let instructions = computer.instructions.len();
 
-        let mut a: usize = 0;
-        for tail_slice in 1..=computer.instructions.len() {
-            let curnt_fasit = computer.instructions[instructions - tail_slice..].to_vec();
+    let mut a: usize = 0;
+    for tail_slice in 1..=computer.instructions.len() {
+        let curnt_fasit = computer.instructions[instructions - tail_slice..].to_vec();
 
-            // Prepares `a` for determining the next `b`
-            // resulting in the correct output.
-            // This is because the program always start by
-            // setting `b` to `a % 8`, which effectively
-            // extracts the last 3 bits of `a`.
-            let mut test_a = a << 3;
-            loop {
-                computer.reset(test_a);
-                let mut curnt = Vec::new();
-                while let Some(step_result) = computer.step() {
-                    // Break early if the sequence is incorrect
-                    if step_result != curnt_fasit[curnt.len()] {
-                        break;
-                    }
-                    curnt.push(step_result);
-                }
-                // Move on if the sequence is correct
-                if curnt == curnt_fasit {
-                    a = test_a;
+        // Prepares `a` for determining the next `b`
+        // resulting in the correct output.
+        // This is because the program always start by
+        // setting `b` to `a % 8`, which effectively
+        // extracts the last 3 bits of `a`.
+        let mut test_a = a << 3;
+        loop {
+            computer.reset(test_a);
+            let mut curnt = Vec::new();
+            while let Some(step_result) = computer.step() {
+                // Break early if the sequence is incorrect
+                if step_result != curnt_fasit[curnt.len()] {
                     break;
                 }
-                test_a += 1;
+                curnt.push(step_result);
             }
+            // Move on if the sequence is correct
+            if curnt == curnt_fasit {
+                a = test_a;
+                break;
+            }
+            test_a += 1;
         }
-        return a;
     }
-    panic!("Failed to read input file")
+    a
 }
 
 struct Computer {
@@ -218,26 +212,12 @@ impl FromIterator<String> for Computer {
 
 #[test]
 fn day17_1a() {
-    use std::fs::{remove_file, File};
-    let file_name = "test_17_1a";
-    let file_path = format!("inputs/{}.txt", file_name);
-    {
-        // Setup for test
-        use std::io::Write;
-        let mut file = File::create(&file_path).expect("Could not create file");
-        writeln!(
-            file,
-            "Register A: 729
+    let input = "Register A: 729
 Register B: 0
 Register C: 0
 
-Program: 0,1,5,4,3,0"
-        )
-        .expect("Could not write to file");
-    }
-    let result = parse_and_solve_part_1(&file_name);
-    // Clean up
-    remove_file(file_path).expect("Could not remove file");
+Program: 0,1,5,4,3,0";
+    let result = parse_and_solve_part_1(input.lines().map(|s| s.to_owned()));
     assert_eq!(result, "4,6,3,5,6,3,5,2,1,0".to_string());
 }
 
@@ -279,25 +259,11 @@ fn day17_1f() {
 
 #[test]
 fn day17_2() {
-    use std::fs::{remove_file, File};
-    let file_name = "test_17_2";
-    let file_path = format!("inputs/{}.txt", file_name);
-    {
-        // Setup for test
-        use std::io::Write;
-        let mut file = File::create(&file_path).expect("Could not create file");
-        writeln!(
-            file,
-            "Register A: 2024
+    let input = "Register A: 2024
 Register B: 0
 Register C: 0
 
-Program: 0,3,5,4,3,0"
-        )
-        .expect("Could not write to file");
-    }
-    let result = parse_and_solve_part_2(&file_name);
-    // Clean up
-    remove_file(file_path).expect("Could not remove file");
+Program: 0,3,5,4,3,0";
+    let result = parse_and_solve_part_2(input.lines().map(|s| s.to_owned()));
     assert_eq!(result, 117440);
 }
