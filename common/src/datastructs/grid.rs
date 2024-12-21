@@ -1,9 +1,11 @@
+use std::fmt::{Debug, Display};
+
 use crate::datatypes::vec2::Vec2;
 
 pub struct Grid<T> {
     grid: Vec<Vec<T>>,
-    rows: usize,
-    columns: usize,
+    pub rows: usize,
+    pub columns: usize,
 }
 
 impl<T> Grid<T> {
@@ -51,6 +53,22 @@ impl<T> Grid<T> {
             })
             .filter(|p| predicate(&self[*p]))
             .collect::<Vec<Vec2>>()
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = &Vec<T>> {
+        self.grid.iter()
+    }
+}
+
+impl<T: Display> Debug for Grid<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for row in &self.grid {
+            for t in row {
+                write!(f, "{}", t)?;
+            }
+            writeln!(f, "")?;
+        }
+        Ok(())
     }
 }
 
