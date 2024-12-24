@@ -142,9 +142,11 @@ impl Index<usize> for StrGrid {
     /// ```rust
     /// // Example where memory is intentionally leaked
     /// // and then reclaimed
-    /// let grid = Grid::from("----------
+    /// use common::datastructs::string_grid::reclaime_leaked_memory;
+    /// use common::datastructs::string_grid::StrGrid;
+    /// let grid = StrGrid::from("----------
     /// ----x-----
-    /// --------y-")
+    /// --------y-");
     ///
     /// let leaked_slice: &[char] = &grid[0];
     /// reclaime_leaked_memory(leaked_slice);
@@ -152,11 +154,12 @@ impl Index<usize> for StrGrid {
     ///
     /// ```rust
     /// // Example where memory is leaked
-    /// let grid = Grid::from("----------
+    ///  use common::datastructs::string_grid::StrGrid;
+    /// let grid = StrGrid::from("----------
     /// ----x-----
-    /// --------y-")
+    /// --------y-");
     /// // Leaks data unable to be reclaimed
-    /// let x: &char = grid[1][4];
+    /// let x: &char = &grid[1][4];
     /// ```
     fn index(&self, index: usize) -> &Self::Output {
         let start = index * self.columns;

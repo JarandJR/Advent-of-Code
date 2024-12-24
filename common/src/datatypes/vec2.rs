@@ -64,6 +64,10 @@ impl Vec2 {
         Vec2::new(self.x.abs(), self.y.abs())
     }
 
+    pub fn sum(&self) -> i32 {
+        self.x + self.y
+    }
+
     pub fn inverse(&self) -> Self {
         Vec2::new(self.x * -1, self.y * -1)
     }
