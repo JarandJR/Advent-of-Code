@@ -96,6 +96,14 @@ where
         self.forward.insert(new_key.clone(), new_value.clone());
         self.reverse.insert(new_value, new_key);
     }
+
+    pub fn forward_iter(&self) -> impl Iterator<Item = (&K, &V)> {
+        self.forward.iter()
+    }
+
+    pub fn reverse_iter(&self) -> impl Iterator<Item = (&V, &K)> {
+        self.reverse.iter()
+    }
 }
 
 pub struct OccupiedEntry<'a, K, V> {
