@@ -34,11 +34,19 @@ where
         Some((key.unwrap(), value.unwrap()))
     }
 
-    pub fn get_by_key(&self, k: &K) -> Option<&V> {
+    pub fn contains_forward(&self, k: &K) -> bool {
+        self.forward.contains_key(k)
+    }
+
+    pub fn contains_reverse(&self, v: &V) -> bool {
+        self.reverse.contains_key(v)
+    }
+
+    pub fn get_forward(&self, k: &K) -> Option<&V> {
         self.forward.get(k)
     }
 
-    pub fn get_by_value(&self, v: &V) -> Option<&K> {
+    pub fn get_reverse(&self, v: &V) -> Option<&K> {
         self.reverse.get(v)
     }
 
@@ -158,21 +166,21 @@ fn test_functionality_of_map() {
     let mut map = BiMap::new();
     map.insert(1, "Hello");
     map.insert(2, "World");
-    assert_eq!(map.get_by_key(&2), Some(&"World"));
-    assert_eq!(map.get_by_value(&"Hello"), Some(&1));
+    assert_eq!(map.get_forward(&2), Some(&"World"));
+    assert_eq!(map.get_reverse(&"Hello"), Some(&1));
 
     let (num, _) = map.entry_forward(3).or_insert("!");
     *num = 20;
     map.sync_reverse();
 
-    assert_eq!(map.get_by_key(&3), None);
-    assert_eq!(map.get_by_key(&20), Some(&"!"));
+    assert_eq!(map.get_forward(&3), None);
+    assert_eq!(map.get_forward(&20), Some(&"!"));
 
     let (_, word) = map.entry_forward(4).or_insert("#");
     *word = "¤";
     map.sync_forward();
-    assert_eq!(map.get_by_value(&"#"), None);
-    assert_eq!(map.get_by_value(&"¤"), Some(&4));
+    assert_eq!(map.get_reverse(&"#"), None);
+    assert_eq!(map.get_reverse(&"¤"), Some(&4));
 
     let (num, word) = map.entry_forward(5).or_insert("&");
     let num_clone = *num;
@@ -181,9 +189,9 @@ fn test_functionality_of_map() {
     *word = "?";
     map.sync(num_clone, word_clone);
 
-    assert_eq!(map.get_by_key(&5), None);
-    assert_eq!(map.get_by_key(&10), Some(&"?"));
+    assert_eq!(map.get_forward(&5), None);
+    assert_eq!(map.get_forward(&10), Some(&"?"));
 
-    assert_eq!(map.get_by_value(&"&"), None);
-    assert_eq!(map.get_by_value(&"?"), Some(&10));
+    assert_eq!(map.get_reverse(&"&"), None);
+    assert_eq!(map.get_reverse(&"?"), Some(&10));
 }
