@@ -95,25 +95,6 @@ fn parse_and_solve_2(line_iter: impl Iterator<Item = String>) -> usize {
        // 251826 to high
 }
 
-fn dfs(
-    curnt: &str,
-    limit: usize,
-    arrow_pad: &HashMap<char, Vec2>,
-    numeric_pad: &HashMap<char, Vec2>,
-    numeric_robot: &mut Vec2,
-) -> usize {
-    if curnt.is_empty() {
-        return 0;
-    }
-    let c = curnt[0..1].parse::<char>().unwrap();
-    let next_robot_pos = numeric_pad.get(&c).unwrap();
-    let distance = *next_robot_pos - *numeric_robot;
-    // Search for these moves with BFS
-    let mut moves = distance_to_moves(distance, arrow_pad);
-    while let Some(mov) = moves.pop_front() {}
-    0
-}
-
 fn parse_and_solve(line_iter: impl Iterator<Item = String>) -> usize {
     /*
     Robot 1: Depressurized
