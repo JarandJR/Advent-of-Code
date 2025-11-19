@@ -10,6 +10,7 @@ fn main() {
 
     // Input file
     let input_file_path = format!("{}/inputs/{}.txt", year, day);
+    println!("{}", input_file_path);
     File::create(&input_file_path).expect("Could not create file");
 
     // Solution file
