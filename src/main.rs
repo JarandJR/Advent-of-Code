@@ -4,8 +4,8 @@ use std::io::Write;
 
 fn main() {
     let today = Local::now();
-    let year = today.year().to_string();
-    let day = format!("{:02}", today.day().to_string());
+    let year = today.year().to_string().trim().to_owned();
+    let day = format!("{:02}", today.day().to_string().trim());
     println!("day {}", day);
 
     // Input file
