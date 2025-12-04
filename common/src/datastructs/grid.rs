@@ -115,3 +115,21 @@ impl<T: From<char>> FromIterator<String> for Grid<T> {
         Grid::new(grid, rows, columns)
     }
 }
+
+impl FromIterator<Vec<char>> for Grid<char> {
+    fn from_iter<I: IntoIterator<Item = Vec<char>>>(iter: I) -> Self {
+        let mut rows = 0;
+        let mut columns = 0;
+        let grid = iter
+            .into_iter()
+            .map(|row| {
+                if rows == 0 {
+                    columns = row.len();
+                }
+                rows += 1;
+                row
+            })
+            .collect::<Vec<Vec<char>>>();
+        Grid::new(grid, rows, columns)
+    }
+}
