@@ -52,7 +52,7 @@ impl Vec2 {
         self.x as usize
     }
 
-    pub fn move_to(self, v: Vector) -> Self {
+    pub fn move_to(self, v: &Vector) -> Self {
         self + v.as_position()
     }
 

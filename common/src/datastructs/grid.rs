@@ -34,9 +34,7 @@ impl<T> Grid<T> {
         Vec2::FOUR_CONNECTEDNESS
             .into_iter()
             .map(|d| d + center)
-            .filter(|p| {
-                (0..self.rows as i32).contains(&p.y) && (0..self.columns as i32).contains(&p.x)
-            })
+            .filter(|p| self.contains_point(p))
             .filter(|p| predicate(&self[*p]))
             .collect::<Vec<Vec2>>()
     }
@@ -48,11 +46,13 @@ impl<T> Grid<T> {
         Vec2::EIGHT_CONNECTEDNESS
             .into_iter()
             .map(|d| d + center)
-            .filter(|p| {
-                (0..self.rows as i32).contains(&p.y) && (0..self.columns as i32).contains(&p.x)
-            })
+            .filter(|p| self.contains_point(p))
             .filter(|p| predicate(&self[*p]))
             .collect::<Vec<Vec2>>()
+    }
+
+    pub fn contains_point(&self, point: &Vec2) -> bool {
+        (0..self.rows as i32).contains(&point.y) && (0..self.columns as i32).contains(&point.x)
     }
 
     pub fn iter(&self) -> impl Iterator<Item = &Vec<T>> {
