@@ -1,3 +1,6 @@
+use std::ops::Deref;
+
+#[derive(Debug)]
 pub struct Priority<Value, Data> {
     v: PriorityDirection<Value>,
     pub data: Data,
@@ -16,6 +19,14 @@ impl<Value, Data> Priority<Value, Data> {
             v: PriorityDirection::Max(pri),
             data,
         }
+    }
+}
+
+impl<Value, Data> Deref for Priority<Value, Data> {
+    type Target = Data;
+
+    fn deref(&self) -> &Self::Target {
+        &self.data
     }
 }
 
@@ -60,6 +71,7 @@ where
     }
 }
 
+#[derive(Debug)]
 enum PriorityDirection<Value> {
     Max(Value),
     Min(Value),
