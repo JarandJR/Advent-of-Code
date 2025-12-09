@@ -16,10 +16,7 @@ fn parse_and_solve_1(line_iter: impl Iterator<Item = String>, k: usize) -> usize
             extend_graph(&mut graph, data);
         }
     }
-    let mut top_paths = graph
-        .iter()
-        .map(|c| c.len())
-        .collect::<BinaryHeap<usize>>();
+    let mut top_paths = graph.iter().map(|c| c.len()).collect::<BinaryHeap<usize>>();
     (0..3).flat_map(|_| top_paths.pop()).product()
 }
 
