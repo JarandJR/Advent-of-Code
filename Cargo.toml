@@ -15,6 +15,7 @@ itertools = "0.13.0"
 num_cpus = "1.16.0"
 chrono = "0.4.38"
 num-rational = "0.4.2"
+good_lp = { version = "1.14.2", features = ["microlp"], default-features = false }
 
 [dependencies]
 chrono = "0.4.38"
