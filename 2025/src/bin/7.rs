@@ -30,7 +30,7 @@ fn parse_and_solve_1(line_iter: impl Iterator<Item = String>) -> usize {
             continue;
         }
         visited.insert(point);
-        let next = if &grid[point] == &'^' {
+        let next = if grid[point] == '^' {
             nodes += 1;
             vec![point + Vec2::EAST, point + Vec2::WEST]
         } else {
@@ -61,7 +61,7 @@ fn parse_and_solve_2(line_iter: impl Iterator<Item = String>) -> usize {
     dfs(
         start,
         &mut mem,
-        &|state| (!grid.contains_point(state)).then(|| 1),
+        &|state| (!grid.contains_point(state)).then_some(1),
         &|state| {
             (grid[*state] == '^')
                 .then(|| vec![*state + Vec2::WEST, *state + Vec2::EAST])
