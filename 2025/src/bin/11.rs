@@ -23,7 +23,7 @@ fn parse_and_solve_1(line_iter: impl Iterator<Item = String>) -> usize {
     dfs(
         "you".to_string(),
         &mut memo,
-        &|state| state.eq("out").then(|| 1),
+        &|state| state.eq("out").then_some(1),
         &|state| paths.get(state).unwrap().to_vec(),
         &|a, b| a + b,
     )
@@ -49,7 +49,7 @@ fn parse_and_solve_2(line_iter: impl Iterator<Item = String>) -> usize {
             state
                 .as_str()
                 .eq("out")
-                .then(|| (*fft && *dac).then(|| 1).unwrap_or_else(|| 0))
+                .then_some(if *fft && *dac { 1 } else { 0 })
         },
         &|(state, fft, dac)| {
             paths
