@@ -22,10 +22,7 @@ fn parse_and_solve_1(line_iter: impl Iterator<Item = String>) -> usize {
         .collect::<Grid<char>>();
     que.drain(..)
         .filter(|roll| {
-            let neighbor_rolls = grid
-                .eight_connectedness(*roll, |c| c.eq(&'@'))
-                .iter()
-                .count();
+            let neighbor_rolls = grid.eight_connectedness(*roll, |c| c.eq(&'@')).len();
             neighbor_rolls < 4
         })
         .count()
@@ -51,10 +48,7 @@ fn parse_and_solve_2(line_iter: impl Iterator<Item = String>) -> usize {
         let count = que
             .drain(..)
             .filter(|roll| {
-                let neighbor_rolls = grid
-                    .eight_connectedness(*roll, |c| c.eq(&'@'))
-                    .iter()
-                    .count();
+                let neighbor_rolls = grid.eight_connectedness(*roll, |c| c.eq(&'@')).len();
                 if neighbor_rolls < 4 {
                     grid[*roll] = '.';
                 }
