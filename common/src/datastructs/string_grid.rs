@@ -46,7 +46,7 @@ impl StrGrid {
         let start = from.to_index(self.columns as i32);
         let step = dir.to_index(self.columns as i32);
         let end = start + step;
-        let step = dir.dir_to_step(self.columns as i32).abs() as usize;
+        let step = dir.dir_to_step(self.columns as i32).unsigned_abs() as usize;
         if self.check_slice(start, end) {
             return Box::new("".chars());
         }
@@ -219,12 +219,11 @@ impl<'a> From<&'a str> for StrGrid {
         let mut columns = 0;
         let grid = input
             .lines()
-            .map(|l| {
+            .inspect(|l| {
                 if columns == 0 {
                     columns = l.len();
                 }
                 rows += 1;
-                l
             })
             .collect::<String>();
 

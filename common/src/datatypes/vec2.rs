@@ -69,7 +69,7 @@ impl Vec2 {
     }
 
     pub fn inverse(&self) -> Self {
-        Vec2::new(self.x * -1, self.y * -1)
+        Vec2::new(-self.x, -self.y)
     }
 
     pub fn rotate_90_clockwise(&self) -> Self {

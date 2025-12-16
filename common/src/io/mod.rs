@@ -54,7 +54,7 @@ pub fn parse_into_lines(year: i32, day: &str) -> Option<impl Iterator<Item = Str
     };
     if let Ok(file) = std::fs::File::open(format!("{}inputs/{}.txt", path, day)) {
         let reader = std::io::BufReader::new(file);
-        return Some(reader.lines().flat_map(|line| line.ok()));
+        return Some(reader.lines().map_while(Result::ok));
     }
     None
 }

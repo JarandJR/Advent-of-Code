@@ -19,7 +19,7 @@ impl<T> Grid<T> {
 
     pub fn from_grid(grid: Vec<Vec<T>>) -> Self {
         let rows = grid.len();
-        let columns = grid.get(0).unwrap_or(&Vec::new()).len();
+        let columns = grid.first().unwrap_or(&Vec::new()).len();
         Self {
             grid,
             rows,
@@ -66,7 +66,7 @@ impl<T: Display> Debug for Grid<T> {
             for t in row {
                 write!(f, "{}", t)?;
             }
-            writeln!(f, "")?;
+            writeln!(f)?;
         }
         Ok(())
     }
@@ -122,12 +122,11 @@ impl FromIterator<Vec<char>> for Grid<char> {
         let mut columns = 0;
         let grid = iter
             .into_iter()
-            .map(|row| {
+            .inspect(|row| {
                 if rows == 0 {
                     columns = row.len();
                 }
                 rows += 1;
-                row
             })
             .collect::<Vec<Vec<char>>>();
         Grid::new(grid, rows, columns)

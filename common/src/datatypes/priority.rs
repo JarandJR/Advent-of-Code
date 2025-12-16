@@ -55,7 +55,7 @@ where
     Value: PartialEq + PartialOrd + Ord + Eq,
 {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(&other))
+        Some(self.cmp(other))
     }
 }
 
