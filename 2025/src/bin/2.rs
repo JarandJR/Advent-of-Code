@@ -18,7 +18,7 @@ fn parse_and_solve_1(line_iter: impl Iterator<Item = String>) -> usize {
                 .unwrap();
             acc + (left..=right).fold(0, |acc, n| {
                 let n_str = n.to_string();
-                let split = (n_str.len() + 1) / 2;
+                let split = n_str.len().div_ceil(2);
                 if n_str[..split].eq(&n_str[split..]) {
                     return acc + n;
                 }
