@@ -76,7 +76,7 @@ fn parse(
     (points, heap)
 }
 
-fn euclidean_squared_distance(p1: &Vec<i64>, p2: &Vec<i64>) -> i64 {
+fn euclidean_squared_distance(p1: &[i64], p2: &[i64]) -> i64 {
     let dx = p1[0] - p2[0];
     let dy = p1[1] - p2[1];
     let dz = p1[2] - p2[2];
