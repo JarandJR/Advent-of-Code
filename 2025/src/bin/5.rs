@@ -20,7 +20,7 @@ fn parse_and_solve_1(mut line_iter: impl Iterator<Item = String>) -> usize {
 
 fn parse_and_solve_2(mut line_iter: impl Iterator<Item = String>) -> usize {
     let ranges = get_unique_ranges(&mut line_iter);
-    ranges.into_iter().flat_map(|r| r).count()
+    ranges.into_iter().flatten().count()
 }
 
 fn get_unique_ranges(line_iter: &mut impl Iterator<Item = String>) -> Vec<RangeInclusive<usize>> {
